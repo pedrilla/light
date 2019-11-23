@@ -1,0 +1,6 @@
+<?php /** @var \Light\Form\Element\Trumbowyg $element */ ?>
+<?php $element = $this->element; ?>
+
+<div data-editor-item="true">
+    <textarea name="<?php echo $element->getName(); ?>" class="form-control content"><?php echo $element->getValue(); ?></textarea>
+</div>

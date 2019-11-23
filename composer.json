@@ -1,0 +1,19 @@
+{
+    "name": "pedrilla/light",
+    "authors": [
+        {
+            "name": "Edward Komissarov",
+            "email": "execrot@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=7.1",
+        "ext-mongodb": ">=1.3",
+        "ext-openssl": "*",
+        "ext-json": "*"
+    },
+
+    "autoload": {
+        "psr-0": { "Light": "src/" }
+    }
+}

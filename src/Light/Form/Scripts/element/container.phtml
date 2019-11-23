@@ -1,0 +1,21 @@
+
+<?php /** @var \Light\Form\Element\ElementAbstract $element */ ?>
+<?php $element = $this->element; ?>
+
+<div class="form-group <?php if ($element->hasError()) : ?>has-error<?php endif; ?> manage-form manage-form-element-<?php echo $element->getElementType(); ?>">
+
+    <div class="row">
+
+        <div class="<?php if ($element->getElementType() == 'checkbox') : ?>col-md-3 col-xs-8<?php else : ?>col-md-3<?php endif; ?> element-label">
+            <?php echo $this->partial($element->getLabelTemplate(), ['element' => $element]); ?>
+        </div>
+
+        <div class="<?php if ($element->getElementType() == 'checkbox') : ?>col-md-9 col-xs-4<?php else : ?>col-md-9<?php endif; ?> element-input">
+            <div class="bmd-field-group">
+                <?php echo $this->render($element->getElementTemplate(), ['element' => $element]); ?>
+                <?php echo $this->partial($element->getErrorTemplate(), ['element' => $element]); ?>
+            </div>
+        </div>
+
+    </div>
+</div>

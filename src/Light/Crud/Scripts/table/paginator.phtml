@@ -1,0 +1,49 @@
+<?php if ($this->pageCount && $this->pageCount > 1): ?>
+
+    <div class="row">
+
+        <div class="col-xs-12 text-right">
+
+            <ul class="pagination pagination-sm bmd-state-primary" data-paginator="true">
+
+                <?php if (isset($this->previous)): ?>
+
+                    <li><a data-page="<?php echo $this->previous; ?>">&laquo;</a></li>
+
+                <?php else: ?>
+
+                    <li class="disabled"><a>&laquo;</a></li>
+
+                <?php endif; ?>
+
+                <?php foreach ($this->pagesInRange as $page) : ?>
+
+                    <?php if ($page == $this->current): ?>
+
+                        <li class="active"><a><?php echo $page; ?></a></li>
+
+                    <?php else: ?>
+
+                        <li><a data-page="<?php echo $page; ?>"><?php echo $page; ?></a></li>
+
+                    <?php endif; ?>
+
+                <?php endforeach; ?>
+
+                <?php if (isset($this->next)): ?>
+
+                    <li><a data-page="<?php echo $this->next; ?>">&raquo;</a></li>
+
+                <?php else: ?>
+
+                    <li class="disabled"><a>&raquo;</a></li>
+
+                <?php endif; ?>
+
+            </ul>
+
+        </div>
+
+    </div>
+
+<?php endif; ?>

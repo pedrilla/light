@@ -1,0 +1,8 @@
+<?php /** @var \Light\Form\Element\ElementAbstract $element */ ?>
+<?php $element = $this->element; ?>
+
+<span class="bmd-field-feedback">
+    <?php if ($element->hasError()) : ?>
+        <?php echo implode('<br />', $element->getErrorMessages()); ?>
+    <?php endif; ?>
+</span>

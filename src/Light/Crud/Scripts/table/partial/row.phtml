@@ -1,0 +1,70 @@
+<?php $index = 0; foreach ($this->header as $key => $col) : ?>
+
+    <?php if ($col['type'] == 'bool') : ?>
+
+        <td class="<?php if (empty($col['static']) && $index > 0) : ?>hidden-xs <?php endif; ?> text-center">
+            <?php if ($this->row->$key) : ?>
+                <span class="indicator bmd-bg-success"></span>
+            <?php else: ?>
+                <span class="indicator bmd-bg-danger"></span>
+            <?php endif; ?>
+        </td>
+
+    <?php elseif ($col['type'] == 'longtext') : ?>
+
+        <td <?php if (empty($col['static']) && $index > 0) : ?> class="hidden-xs" <?php endif; ?>>
+            <?php echo htmlspecialchars(mb_substr(strip_tags($this->row->$key), 0, 50)); ?>...
+        </td>
+
+    <?php elseif ($col['type'] == 'link') : ?>
+
+        <td <?php if (empty($col['static']) && $index > 0) : ?> class="hidden-xs" <?php endif; ?>>
+            <a data-force="true" href="<?php echo $this->row->$key; ?>/" target="_blank"><?php echo $this->row->$key; ?></a>
+        </td>
+
+    <?php elseif ($col['type'] == 'date') : ?>
+
+        <td <?php if (empty($col['static']) && $index > 0) : ?> class="hidden-xs" <?php endif; ?>>
+            <?php echo date('Y/m/d H:i:s', $this->row->$key); ?>
+        </td>
+
+    <?php elseif ($col['type'] == 'model') : ?>
+
+        <td <?php if (empty($col['static']) && $index > 0) : ?> class="hidden-xs" <?php endif; ?>>
+            <?php echo $this->row[$key][$col['field']]; ?>
+        </td>
+
+    <?php elseif ($col['type'] == 'images') : ?>
+
+        <td <?php if (empty($col['static']) && $index > 0) : ?> class="hidden-xs" <?php endif; ?> style="width: 10px;">
+
+            <?php if (isset($this->row[$key][0])) : ?>
+
+                <div class="background-image table-preview-image bmd-floating bmd-ripple"
+                     data-image-large="<?php echo $this->row[$key][0] ?? ''; ?>"
+                     style="background-image: url(<?php echo $this->row[$key][0] ?? ''; ?>); "></div>
+
+            <?php endif; ?>
+
+        </td>
+
+    <?php elseif ($col['type'] == 'image') : ?>
+
+        <td <?php if (empty($col['static']) && $index > 0) : ?> class="hidden-xs" <?php endif; ?> style="width: 10px;">
+
+            <div class="background-image table-preview-image bmd-floating bmd-ripple"
+                 data-image-large="<?php echo $this->row[$key] ?? ''; ?>"
+                 style="background-image: url(<?php echo $this->row[$key] ?? ''; ?>); "></div>
+        </td>
+
+    <?php else : ?>
+
+        <td <?php if (empty($col['static']) && $index > 0) : ?> class="hidden-xs" <?php endif; ?>>
+            <?php echo $this->row[$key]; ?>
+        </td>
+
+    <?php endif; ?>
+
+    <?php $index++; ?>
+
+<?php endforeach; ?>

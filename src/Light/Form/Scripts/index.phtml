@@ -1,0 +1,28 @@
+<?php /** @var \Light\Form\Form $form */ ?>
+<?php $form = $this->form; ?>
+
+<form class="form-horizontal"
+      enctype="multipart/form-data"
+      method="<?php echo $form->getMethod(); ?>"
+      <?php if ($form->getAction()) : ?>action="<?php echo $form->getAction(); ?>"<?php endif; ?>>
+
+    <?php /** @var \Light\Form\Element\ElementAbstract $element */ ?>
+    <?php foreach ($form->getElements() as $element) : ?>
+
+        <?php echo $element; ?>
+
+    <?php endforeach; ?>
+
+    <div class="form-group">
+
+        <div class="col-xs-12">
+            <hr />
+        </div>
+
+        <div class="col-sm-offset-3 col-sm-9">
+            <input type="submit" class="btn btn-success footer" value="<?php echo $form->getSubmit(); ?>" />
+        </div>
+
+    </div>
+
+</form>

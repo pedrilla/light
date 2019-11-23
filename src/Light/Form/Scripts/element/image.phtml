@@ -1,0 +1,27 @@
+<?php /** @var \Light\Form\Element\Image $element */ ?>
+<?php $element = $this->element; ?>
+
+<div data-element-imagesingle="true"
+     class="imagesingle-container container-fluid"
+     data-storage-url="/<?php echo \Light\Front::getInstance()->getConfig()['light']['storage']['route']; ?>"
+     data-name="<?php echo $element->getName(); ?>">
+
+    <a data-select="true" class="btn btn-primary bmd-ripple bmd-fab bmd-fab-sm bmd-floating">
+        <span class="bmd-icon flaticon-add182"></span>
+    </a>
+
+    <input name="<?php echo $element->getName(); ?>" value="<?php echo $element->getValue(); ?>" type="hidden" />
+
+    <div data-image-container="true">
+
+        <?php if ($value = $element->getValue()) : ?>
+            <a class="btn btn-default background-image preview-image-single bmd-floating bmd-ripple" style="background-image: url('<?php echo $value; ?>');" data-image-large="<?php echo $value; ?>"></a>
+        <?php endif; ?>
+
+    </div>
+
+    <script type="text/html" data-template="true">
+        <a class="btn btn-default background-image preview-image-single bmd-floating bmd-ripple" style="background-image: url('{{value}}');" data-image-large="{{value}}"></a>
+    </script>
+
+</div>

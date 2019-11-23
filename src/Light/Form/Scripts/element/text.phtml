@@ -1,0 +1,12 @@
+<?php /** @var \Light\Form\Element\ElementAbstract $element */ ?>
+<?php $element = $this->element; ?>
+
+<input type="text"
+       class="bmd-input"
+       <?php if ($element->isReadOnly()) : ?>readonly="readonly"<?php endif; ?>
+       id="<?php echo $element->getName(); ?>"
+       name="<?php echo $element->getName(); ?>"
+       value="<?php echo htmlspecialchars($element->getValue()); ?>" />
+
+<label class="bmd-label"><?php echo $element->getLabel() ?? $element->getName(); ?></label>
+<span class="bmd-bar"></span>

@@ -1,0 +1,43 @@
+<?php /** @var \Light\Form\Element\Select $element */ ?>
+<?php $element = $this->element; ?>
+
+<?php $value = ['value' => null, 'title' => $element->getHint()]; ?>
+
+<?php
+    foreach ($element->getNormalizedOptions() as $option => $name) {
+        if ($option == $element->getValue()) {
+            $value = ['value' => $option, 'title' => $name];
+        }
+    }
+?>
+
+<div class="dropdown bmd-select form-control" data-control-select="true">
+
+    <a class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" role="button" aria-expanded="false">
+        <span class="bmd-selected-value"><?php echo $value['title']; ?></span>
+        <span class="caret"></span>
+        <input name="<?php echo $element->getName(); ?>" value="<?php echo $value['value']; ?>" type="hidden" />
+    </a>
+
+    <ul class="dropdown-menu">
+
+        <?php if ($element->isAllowNull()) : ?>
+            <li><a data-option="" data-value="<?php echo $element->getHint(); ?>"><?php echo $element->getHint(); ?></a></li>
+            <li class="divider"></li>
+        <?php endif; ?>
+
+        <?php foreach ($element->getNormalizedOptions() as $value => $name) : ?>
+
+            <li>
+                <a <?php if ($element->getValue() == $value) : ?> class="bmd-bg-primary bmd-text-grey-50" <?php endif; ?>
+                        data-option="<?php echo $value; ?>"
+                        data-value="<?php echo $name; ?>">
+                    <?php echo $name; ?>
+                </a>
+            </li>
+
+        <?php endforeach; ?>
+
+    </ul>
+    <span class="bmd-bar"></span>
+</div>

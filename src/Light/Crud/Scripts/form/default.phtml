@@ -1,0 +1,45 @@
+<?php /** @var \Light\Form $form */ ?>
+<?php $form = $this->form; ?>
+
+<form class="bmd-form" enctype="multipart/form-data" method="<?php echo $form->getMethod(); ?>" data-from-manage="true">
+
+    <input type="hidden" value="<?php echo $form->getReturnUrl(); ?>" name="return-url" />
+
+    <?php echo $this->partial('header'); ?>
+
+    <div class="container">
+
+        <div class="row">
+
+            <div class="col-xs-12">
+
+                <div class="panel">
+
+                    <div class="panel-body">
+
+                        <?php /** @var Default_Form_Element_Abstract $element */ ?>
+                        <?php foreach ($form->getElements() as $element) : ?>
+                            <?php echo $element; ?>
+                        <?php endforeach; ?>
+
+                    </div>
+
+                    <div class="panel-footer text-right">
+
+                        <?php if (!$this->hideCancelButton) : ?>
+                            <a href="<?php echo $form->getReturnUrl(); ?>" class="btn btn-default btn-lg bmd-ripple bmd-floating">Отмена</a>
+                        <?php endif; ?>
+
+                        <input type="submit" class="btn btn-primary btn-lg bmd-ripple bmd-floating footer" value="<?php echo $form->getSubmit(); ?>" />
+                    </div>
+
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</form>

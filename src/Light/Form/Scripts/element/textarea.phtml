@@ -1,0 +1,10 @@
+<?php /** @var \Light\Form\Element\Textarea $element */ ?>
+<?php $element = $this->element; ?>
+
+<textarea class="bmd-textarea"
+          rows="5"
+          id="<?php echo $element->getName(); ?>"
+          name="<?php echo $element->getName(); ?>"><?php echo $element->getValue(); ?></textarea>
+
+<label class="bmd-label"><?php echo $element->getPlaceholder() ?? $element->getName(); ?></label>
+<span class="bmd-bar"></span>

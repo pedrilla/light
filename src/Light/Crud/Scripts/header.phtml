@@ -1,0 +1,91 @@
+<div class="header bmd-border-primary box-shadow">
+
+    <div class="container">
+
+        <div class="row">
+
+            <div class="col-xs-6">
+
+                <?php if ($this->title) : ?>
+                    <p class="lead"><?php echo $this->title; ?></p>
+                <?php endif; ?>
+
+            </div>
+
+            <div class="col-xs-6 text-right">
+
+                <?php if ($this->done) : ?>
+
+                    <a href="<?php echo $this->uri(['action' => 'index']); ?>"
+                       class="btn btn-primary bmd-ripple bmd-fab bmd-floating bmd-fab-sm"
+                       data-bmd-state="primary"
+                       data-toggle="tooltip"
+                       data-placement="bottom"
+                       data-original-title="Готово">
+                        <span class="bmd-icon material-icons">check</span>
+                    </a>
+
+                <?php endif; ?>
+
+                <?php if ($this->button) : ?>
+
+                    <a href="<?php echo $this->uri(['action' => 'manage']); ?>"
+                       class="btn btn-primary bmd-ripple bmd-fab bmd-floating bmd-fab-sm"
+                       data-bmd-state="primary"
+                       data-toggle="tooltip"
+                       data-placement="bottom"
+                       data-original-title="Добавить">
+                        <span class="bmd-icon flaticon-add182"></span>
+                    </a>
+
+                <?php endif; ?>
+
+
+                <?php if ($this->positioning) : ?>
+
+                    <?php if ($this->positioningCustom) : ?>
+
+                        <a href="<?php echo $this->url(['action' => 'position', 'language' => $this->language]); ?>"
+                           class="btn btn-info bmd-ripple bmd-fab bmd-floating bmd-fab-sm"
+                           data-bmd-state="info"
+                           data-toggle="tooltip"
+                           data-placement="bottom"
+                           data-original-title="Позиция">
+
+                            <span class="bmd-icon flaticon-sort52"></span>
+                        </a>
+
+                    <?php else: ?>
+
+                        <a data-href="<?php echo $this->url(['action' => 'position']); ?>"
+                           data-table-position="true"
+
+                           class="btn btn-info bmd-ripple bmd-fab bmd-floating bmd-fab-sm"
+
+                           data-bmd-state="info"
+                           data-toggle="tooltip"
+                           data-placement="bottom"
+                           data-original-title="Позиция">
+
+                            <span class="bmd-icon flaticon-sort52"></span>
+                        </a>
+
+                    <?php endif; ?>
+
+                <?php endif; ?>
+
+
+                <?php if ($this->export) : ?>
+
+                    <a href="<?php echo $this->url(['action' => 'export']); ?>" class="btn btn-default bmd-ripple bmd-fab bmd-floating bmd-fab-sm">
+                        <span class="bmd-icon material-icons">file_download</span>
+                    </a>
+
+                <?php endif; ?>
+
+            </div>
+        </div>
+
+    </div>
+
+</div>

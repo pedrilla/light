@@ -1,0 +1,69 @@
+<?php if ($this->filter) : ?>
+
+    <div class="row">
+
+        <?php foreach ($this->filter as $filter) : ?>
+
+            <div class="col-xs-12 col-sm-<?php echo 12 / count($this->filter); ?>">
+
+
+                <?php if ($filter['type'] == 'search') : ?>
+
+                    <?php echo $this->partial('table/partial/filter/search', ['filter' => $filter]); ?>
+
+
+
+                <?php elseif ($filter['type'] == 'language') : ?>
+
+                    <?php echo $this->partial('table/partial/filter/language', ['filter' => $filter]); ?>
+
+
+
+                <?php elseif ($filter['type'] == 'model') : ?>
+
+                    <?php echo $this->partial('table/partial/filter/model', ['filter' => $filter]); ?>
+
+
+
+                <?php elseif ($filter['type'] == 'datetime') : ?>
+
+                    <?php echo $this->asset([
+                        'admin/libraries/datetimepicker/jquery.datetimepicker.min.css',
+                        'admin/libraries/datetimepicker/jquery.datetimepicker.full.min.js',
+                        'admin/js/datetimepicker.js'
+                    ]); ?>
+
+                    <div class="row">
+
+                        <div class="col-xs-6">
+
+                            <input type="text"
+                                   data-datetimepicker="true"
+                                   class="form-control"
+                                   name="filter[<?php echo $filter['name']; ?>][from]"
+                                   value="<?php echo $filter['value']['from'] ?? date('Y/01/01 00:00'); ?>">
+
+                        </div>
+
+                        <div class="col-xs-6">
+
+                            <input type="text"
+                                   data-datetimepicker="true"
+                                   onchange="$(this.form).submit();"
+                                   class="form-control"
+                                   name="filter[<?php echo $filter['name']; ?>][to]"
+                                   value="<?php echo $filter['value']['to'] ?? date('Y/m/d H:i', time()); ?>">
+
+                        </div>
+
+                    </div>
+
+                <?php endif; ?>
+
+            </div>
+
+        <?php endforeach; ?>
+
+    </div>
+
+<?php endif; ?>

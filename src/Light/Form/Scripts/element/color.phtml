@@ -1,0 +1,9 @@
+<?php /** @var \Light\Form\Element\Color $element */ ?>
+<?php $element = $this->element; ?>
+
+<input type="color"
+       class="form-control"
+       <?php if ($element->isReadOnly()) : ?>readonly="readonly"<?php endif; ?>
+       id="<?php echo $element->getName(); ?>"
+       name="<?php echo $element->getName(); ?>"
+       value="<?php echo htmlspecialchars($element->getValue()); ?>" />

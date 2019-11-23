@@ -1,0 +1,96 @@
+<?php /** @var \Light\Form\Element\Trumbowyg $element */ ?>
+<?php $element = $this->element; ?>
+
+
+<div data-editor="true">
+
+    <a class="btn btn-primary btn-block bmd-ripple bmd-floating" data-editor-control="add" data-name="<?php echo $element->getName(); ?>">
+        <i class="fa fa-plus"></i>
+    </a>
+
+    <?php if ($value = $element->getValue()) : ?>
+
+        <?php foreach ($value as $content) : ?>
+
+            <div class="row" data-editor-item-content="true">
+
+                <?php foreach ($content as $index => $contentItem) : ?>
+
+                    <div class="col-xs-12 col-sm-<?php echo 12 / count($content); ?>" data-cell="true">
+
+                        <div data-editor-item="true" class="editor-cell-container">
+
+                            <a data-editor-item-delete="left" class="btn btn-danger bmd-fab bmd-fab-sm bmd-ripple bmd-floating delete-editor-cell">
+                                <i class="fa fa-times"></i>
+                            </a>
+
+                            <textarea name="<?php echo $element->getName(); ?>[content][]" class="form-control content"><?php echo $contentItem; ?></textarea>
+
+
+                            <?php if (count($content) == 1) : ?>
+
+                                <input type="hidden" class="form-control" name="<?php echo $element->getName(); ?>[meta][]" value="full" />
+
+                            <?php elseif ($index == 0) : ?>
+
+                                <input type="hidden" class="form-control" name="<?php echo $element->getName(); ?>[meta][]" value="left" />
+
+                            <?php elseif (count($content) == $index + 1) : ?>
+
+                                <input type="hidden" class="form-control" name="<?php echo $element->getName(); ?>[meta][]" value="right" />
+
+                            <?php endif; ?>
+
+
+                        </div>
+                    </div>
+
+                <?php endforeach; ?>
+
+            </div>
+
+            <a class="btn btn-primary btn-block bmd-ripple bmd-floating" data-editor-control="add" data-name="<?php echo $element->getName(); ?>">
+                <i class="fa fa-plus"></i>
+            </a>
+
+        <?php endforeach; ?>
+
+    <?php endif; ?>
+
+</div>
+
+
+<script type="text/html" id="template-control-<?php echo $element->getName(); ?>">
+
+    <a class="btn btn-primary btn-block bmd-ripple bmd-floating" data-editor-control="add" data-name="<?php echo $element->getName(); ?>">
+        <i class="fa fa-plus"></i>
+    </a>
+
+</script>
+
+<script type="text/html" id="template-content-<?php echo $element->getName(); ?>">
+
+    <div class="row" data-editor-item-content="true">
+
+        <div class="col-xs-12 col-sm-6" data-cell="true">
+            <div data-editor-item="true" class="editor-cell-container">
+                <a data-editor-item-delete="left" class="btn btn-danger bmd-fab bmd-fab-sm bmd-ripple bmd-floating delete-editor-cell">
+                    <i class="fa fa-times"></i>
+                </a>
+                <textarea name="<?php echo $element->getName(); ?>[content][]" class="form-control content"></textarea>
+                <input type="hidden" class="form-control" name="<?php echo $element->getName(); ?>[meta][]" value="left" />
+            </div>
+        </div>
+
+        <div class="col-xs-12 col-sm-6" data-cell="true">
+            <div data-editor-item="true" class="editor-cell-container">
+                <a data-editor-item-delete="right" class="btn btn-danger bmd-fab bmd-fab-sm bmd-ripple bmd-floating delete-editor-cell">
+                    <i class="fa fa-times"></i>
+                </a>
+                <textarea name="<?php echo $element->getName(); ?>[content][]" class="form-control content"></textarea>
+                <input type="hidden" class="form-control" name="<?php echo $element->getName(); ?>[meta][]" value="right" />
+            </div>
+        </div>
+    </div>
+
+</script>

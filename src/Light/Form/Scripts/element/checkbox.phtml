@@ -1,0 +1,16 @@
+<?php /** @var \Light\Form\Element\Checkbox $element */ ?>
+<?php $element = $this->element; ?>
+
+<div class="checkbox bmd-switch bmd-switch-default bmd-switch-primary">
+    <label>
+
+        <input value="1"
+               type="checkbox"
+               id="<?php echo $element->getName(); ?>"
+               name="<?php echo $element->getName(); ?>"
+            <?php if ($element->getValue()) : ?> checked="checked" <?php endif; ?> />
+
+        <div class="bmd-switch-track"></div>
+        <div class="bmd-switch-thumb bmd-ripple"></div>
+    </label>
+</div>

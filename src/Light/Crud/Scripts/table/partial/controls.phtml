@@ -1,0 +1,103 @@
+<td class="text-right">
+
+    <div class="btn-group">
+
+        <div class="bmd-fab-speed-dial-container">
+
+            <a class="bmd-fab-speed-dialer spin btn btn-primary bmd-ripple bmd-fab bmd-floating bmd-fab-sm">
+                <span class="bmd-icon in flaticon-show8"></span>
+                <span class="bmd-icon out flaticon-close47"></span>
+            </a>
+
+            <ul class="bmd-fab-speed-dial-list left">
+
+                <?php foreach ($this->controls as $control) : ?>
+
+                    <?php if ($control['type'] == 'edit') : ?>
+
+                        <li>
+                            <a href="<?php echo $this->uri(['controller' => $this->controller, 'action' => 'manage'], ['id' => $this->row->id]); ?>"
+                               class="btn btn-info bmd-ripple bmd-fab bmd-fab-sm bmd-floating overflow-visible">
+                                <i class="bmd-icon material-icons"
+                                   data-bmd-state="info"
+                                   data-toggle="tooltip"
+                                   data-placement="bottom"
+                                   data-original-title="Изменить">edit</i>
+                            </a>
+                        </li>
+
+
+                    <?php elseif ($control['type'] == 'select') : ?>
+
+                        <li>
+                            <a data-control-select="<?php echo json_encode($this->row->toArray()); ?>"
+                               class="btn btn-info bmd-ripple bmd-fab bmd-fab-sm bmd-floating overflow-visible">
+                                <i class="bmd-icon material-icons"
+                                   data-bmd-state="info"
+                                   data-toggle="tooltip"
+                                   data-placement="bottom"
+                                   data-original-title="Выбрать">select</i>
+                            </a>
+                        </li>
+
+
+
+                    <?php elseif ($control['type'] == 'copy') : ?>
+
+                        <li>
+                            <a data-copy="true"
+                               data-title="Копировать запись?"
+                               data-href="<?php echo $this->uri(['controller' => $this->controller, 'action' => 'copy'], ['id' => $this->row->id]); ?>"
+                               class="btn btn-success bmd-ripple bmd-fab bmd-fab-sm bmd-floating overflow-visible">
+                                <i class="bmd-icon material-icons"
+                                   data-bmd-state="success"
+                                   data-toggle="tooltip"
+                                   data-placement="bottom"
+                                   data-original-title="Копировать">content_copy</i>
+                            </a>
+                        </li>
+
+                    <?php elseif ($control['type'] == 'enabled') : ?>
+
+                        <li>
+
+                            <?php if ($this->row->enabled) : ?>
+
+                                <a data-enabled="true"
+                                   data-title="Приостановить работу?"
+                                   data-href="<?php echo $this->uri(['controller' => $this->controller, 'action' => 'setEnabled'], ['enabled' => 0, 'id' => $this->row->id]); ?>"
+                                   class="btn btn-warning bmd-ripple bmd-fab bmd-fab-sm bmd-floating overflow-visible">
+                                    <i class="bmd-icon material-icons"
+                                       data-bmd-state="warning"
+                                       data-toggle="tooltip"
+                                       data-placement="bottom"
+                                       data-original-title="Выключить">visibility</i>
+                                </a>
+
+                            <?php else : ?>
+
+                                <a data-enabled="true"
+                                   data-title="Возобновить работу?"
+                                   data-href="<?php echo $this->uri(['controller' => $this->controller, 'action' => 'setEnabled'], ['enabled' => 1, 'id' => $this->row->id]); ?>"
+                                   class="btn btn-warning bmd-ripple bmd-fab bmd-fab-sm bmd-floating overflow-visible">
+                                    <i class="bmd-icon material-icons"
+                                       data-bmd-state="warning"
+                                       data-toggle="tooltip"
+                                       data-placement="bottom"
+                                       data-original-title="Включить">visibility_off</i>
+                                </a>
+
+                            <?php endif; ?>
+
+                        </li>
+
+                    <?php endif; ?>
+
+                <?php endforeach; ?>
+            </ul>
+
+        </div>
+
+    </div>
+
+</td>

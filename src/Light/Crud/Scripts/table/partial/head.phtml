@@ -1,0 +1,42 @@
+<thead>
+
+    <tr>
+
+        <?php $index = 0; foreach ($this->header as $name => $header) : ?>
+
+            <?php if ($header['type'] == 'bool') : ?>
+
+                <th class="<?php if (empty($header['static']) && $index > 0) : ?>hidden-xs <?php endif; ?> text-center" style="width: 111px;">
+
+                    <?php echo str_replace(' ', '&nbsp;', $header['title']); ?>
+
+                </th>
+
+
+            <?php elseif ($header['type'] == 'image' || $header['type'] == 'images') : ?>
+
+                <th class="<?php if (empty($header['static']) && $index > 0) : ?>hidden-xs <?php endif; ?>">
+
+                    <span><?php echo str_replace(' ', '&nbsp;', $header['title']); ?></span>
+
+                </th>
+
+            <?php else : ?>
+
+                <th class="<?php if (empty($header['static']) && $index > 0) : ?>hidden-xs <?php endif; ?>">
+
+                    <?php echo str_replace(' ', '&nbsp;', $header['title']); ?>
+
+                </th>
+
+            <?php endif; ?>
+
+            <?php $index ++; ?>
+            
+        <?php endforeach; ?>
+
+        <th class="text-right" style="width: 10px;"></th>
+
+    </tr>
+
+</thead>

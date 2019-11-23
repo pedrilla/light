@@ -1,0 +1,7 @@
+<?php /** @var \Light\Form\Element\Hidden $element */ ?>
+<?php $element = $this->element; ?>
+
+<input type="hidden"
+       id="<?php echo $element->getName(); ?>"
+       name="<?php echo $element->getName(); ?>"
+       value="<?php echo $element->getValue(); ?>" />
