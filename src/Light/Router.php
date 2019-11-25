@@ -261,15 +261,15 @@ class Router
     {
         $domain = $this->getRequest()->getDomain();
 
-        if (!isset($this->_routes[$domain]) && !isset($this->_routes['*'])) {
+        if (!isset($this->_routes[$domain]) && !isset($this->_routes['*']) && count($this->_routes)) {
             throw new RouterDomainWasNotFound($domain);
         }
         else if (!isset($this->_routes[$domain])) {
             $domain = '*';
         }
 
-        $routes = $this->_routes[$domain];
-        $this->_module = $routes['module'];
+        $routes = $this->_routes[$domain] ?? [];
+        $this->_module = $routes['module'] ?? '';
 
         $uri = explode('?', $this->getRequest()->getUri())[0];
 

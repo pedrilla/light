@@ -274,7 +274,7 @@ final class Front
 
             if (!$this->_router) {
                 $this->_router = new Router();
-                $this->_router->setRoutes($this->_config['router']);
+                $this->_router->setRoutes($this->_config['router'] ?? []);
                 $this->_router->setRequest($this->_request);
                 $this->_router->parse();
             }
