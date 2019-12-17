@@ -45,7 +45,7 @@
 
                     <?php if ($this->positioningCustom) : ?>
 
-                        <a href="<?php echo $this->url(['action' => 'position', 'language' => $this->language]); ?>"
+                        <a href="<?php echo $this->uri(['action' => 'position', 'language' => $this->language]); ?>"
                            class="btn btn-info bmd-ripple bmd-fab bmd-floating bmd-fab-sm"
                            data-bmd-state="info"
                            data-toggle="tooltip"
@@ -57,7 +57,7 @@
 
                     <?php else: ?>
 
-                        <a data-href="<?php echo $this->url(['action' => 'position']); ?>"
+                        <a data-href="<?php echo $this->uri(['action' => 'position']); ?>"
                            data-table-position="true"
 
                            class="btn btn-info bmd-ripple bmd-fab bmd-floating bmd-fab-sm"
@@ -77,7 +77,7 @@
 
                 <?php if ($this->export) : ?>
 
-                    <a href="<?php echo $this->url(['action' => 'export']); ?>" class="btn btn-default bmd-ripple bmd-fab bmd-floating bmd-fab-sm">
+                    <a data-force="true" href="<?php echo $this->uri(['action' => 'export']) . '?' . \Light\Front::getInstance()->getRouter()->getRequest()->getUriParams(); ?>" class="btn btn-default bmd-ripple bmd-fab bmd-floating bmd-fab-sm">
                         <span class="bmd-icon material-icons">file_download</span>
                     </a>
 
