@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace Light;
 
 use Light\Form\Element\ElementAbstract;
+use Light\Form\Element\Hidden;
 use Light\Form\Element\Separator;
 use Light\View;
 
@@ -70,7 +71,7 @@ class Form
     /**
      * @param ElementAbstract[] $elements
      */
-    public function setElements(array $elements): void
+    public function addElements(array $elements): void
     {
         if (count($elements)) {
 
@@ -127,7 +128,11 @@ class Form
         $values = [];
 
         foreach ($this->getElements() as $name => $element) {
-            $values[$name] = $element->getValue();
+
+            if (get_class($element) != 'Light\Form\Element\Separator') {
+
+                $values[$name] = $element->getValue();
+            }
         }
 
         return $values;
@@ -257,9 +262,11 @@ class Form
 
         foreach ($this->getElements() as $name => $element) {
 
-            if (!$element->isValid($data[$name] ?? null)) {
+            if (get_class($element) != 'Light\Form\Element\Separator') {
 
-                $isValid = false;
+                if (!$element->isValid($data[$name] ?? null)) {
+                    $isValid = false;
+                }
             }
         }
 
@@ -307,5 +314,29 @@ class Form
     /**
      * @param Model|null $model
      */
-    public function init($model = null) {}
+    public function init($model = null)
+    {
+        if ($model && $model->id) {
+            $this->addElement(
+                new Hidden('id', ['value' => $model->id])
+            );
+        }
+    }
+
+    /**
+     * @return array
+     */
+    public function getErrorMessages()
+    {
+        $errorMessages = [];
+
+        foreach ($this->getElements() as $element) {
+
+            if ($elementErrorMessages = $element->getErrorMessages()) {
+                $errorMessages[$element->getName()] = $elementErrorMessages;
+            }
+        }
+
+        return $errorMessages;
+    }
 }

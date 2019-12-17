@@ -30,10 +30,27 @@ final class Registry
      */
     public static function get(string $key)
     {
-        if (!isset(self::$_data)) {
+        if (!isset(self::$_data[$key])) {
             throw new Exception\RegistryKeyIsNotExists($key);
         }
 
         return self::$_data[$key];
+    }
+
+    /**
+     * @param string $key
+     * @return bool
+     */
+    public static function check(string $key)
+    {
+        return isset(self::$_data[$key]);
+    }
+
+    /**
+     * @param string $key
+     */
+    public static function remove(string $key)
+    {
+        unset(self::$_data[$key]);
     }
 }

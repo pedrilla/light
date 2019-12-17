@@ -4,6 +4,8 @@ declare(strict_types = 1);
 
 namespace Light;
 
+use Light\Filter\FilterAbstract;
+
 /**
  * Class Request
  * @package Light
@@ -31,6 +33,11 @@ class Request
     /**
      * @var array
      */
+    private $_params = [];
+
+    /**
+     * @var array
+     */
     private $_headers = [];
 
     /**
@@ -42,6 +49,16 @@ class Request
      * @var string
      */
     private $_uri = null;
+
+    /**
+     * @var string
+     */
+    private $_uriParams = null;
+
+    /**
+     * @var null
+     */
+    private $_uriRequest = null;
 
     /**
      * @var string
@@ -91,6 +108,7 @@ class Request
     {
         $this->_getParams = $_GET;
         $this->_postParams = $_POST;
+        $this->_params = $_REQUEST;
 
         foreach ($_SERVER as $key => $value) {
             if (substr($key, 0, 5) == 'HTTP_') {
@@ -104,6 +122,9 @@ class Request
         $this->_scheme = $_SERVER['REQUEST_SCHEME'];
         $this->_port = (int)$_SERVER['SERVER_PORT'];
         $this->_ip = $_SERVER['REMOTE_ADDR'];
+
+        $this->_uriRequest = explode('?', $_SERVER['REQUEST_URI'])[0];
+        $this->_uriParams = explode('?', $_SERVER['REQUEST_URI'])[1] ?? '';
 
         if (!empty($_SERVER['HTTP_X_REQUESTED_WITH'])
             && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
@@ -142,12 +163,19 @@ class Request
 
     /**
      * @param string $key
-     * @param mixed $default
-     * @return mixed
+     * @param null $default
+     * @param FilterAbstract[] $filters
+     * @return string|int|mixed|null|array
      */
-    public function getGet(string $key, $default = null)
+    public function getGet(string $key, $default = null, array $filters = [])
     {
-        return $this->_getParams[$key] ?? $default;
+        $value = $this->_getParams[$key] ?? $default;
+
+        foreach ($filters as $filter) {
+            $value = $filter->filter($value);
+        }
+
+        return $value;
     }
 
     /**
@@ -160,12 +188,23 @@ class Request
 
     /**
      * @param string $key
-     * @param mixed $default
-     * @return mixed
+     * @param null $default
+     * @param FilterAbstract[] $filters
+     *
+     * @return string|int|mixed|null|array
      */
-    public function getPost(string $key, $default = null)
+    public function getPost(string $key, $default = null, array $filters = [])
     {
-        return $this->_postParams[$key] ?? $default;
+        $value = $this->_postParams[$key] ?? $default;
+
+        foreach ($filters as $filter) {
+
+            $filter = new $filter();
+
+            $value = $filter->filter($value);
+        }
+
+        return $value;
     }
 
     /**
@@ -174,6 +213,35 @@ class Request
     public function getPostAll() : array
     {
         return $this->_postParams;
+    }
+
+    /**
+     * @param string $name
+     * @param null $default
+     * @param FilterAbstract[] $filters
+     *
+     * @return string|int|mixed|null|array
+     */
+    public function getParam(string $name, $default = null, array $filters = [])
+    {
+        $value = $this->_params[$name] ?? $default;
+
+        foreach ($filters as $filter) {
+
+            $filter = new $filter();
+
+            $value = $filter->filter($value);
+        }
+
+        return $value;
+    }
+
+    /**
+     * @return array
+     */
+    public function getParams() : array
+    {
+        return $this->_params;
     }
 
     /**
@@ -188,9 +256,9 @@ class Request
      * @param string $key
      * @return string
      */
-    public function getHeader(string $key) : string
+    public function getHeader(string $key)
     {
-        return $this->_headers[$key];
+        return $this->_headers[$key] ?? null;
     }
 
     /**
@@ -200,6 +268,22 @@ class Request
     public function setHeader(string $key, string $value)
     {
         $this->_headers[$key] = $value;
+    }
+
+    /**
+     * @return array
+     */
+    public function getXHeaders()
+    {
+        $xHeaders = [];
+
+        foreach ($this->_headers as $name => $value) {
+            if (substr($name, 0, 2) == 'x-') {
+                $xHeaders[$name] = $value;
+            }
+        }
+
+        return $xHeaders;
     }
 
     /**
@@ -346,5 +430,37 @@ class Request
             $this->_getParams[$key] = $value;
             return;
         }
+    }
+
+    /**
+     * @return string
+     */
+    public function getUriParams(): string
+    {
+        return $this->_uriParams;
+    }
+
+    /**
+     * @param string $uriParams
+     */
+    public function setUriParams(string $uriParams): void
+    {
+        $this->_uriParams = $uriParams;
+    }
+
+    /**
+     * @return null
+     */
+    public function getUriRequest()
+    {
+        return $this->_uriRequest;
+    }
+
+    /**
+     * @param null $uriRequest
+     */
+    public function setUriRequest($uriRequest): void
+    {
+        $this->_uriRequest = $uriRequest;
     }
 }

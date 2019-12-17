@@ -379,6 +379,11 @@ final class Front
                     $content = $this->_view->render();
                 }
 
+                if (is_object($content) && $content instanceof Map) {
+                    /** @var Map $content */
+                    $content = $content->toArray();
+                }
+                
                 if (is_array($content)) {
                     $content = json_encode($content, JSON_PRETTY_PRINT);
                     $this->_response->setHeader('Content-type', 'application/json');
@@ -580,16 +585,15 @@ final class Front
     {
         /** Setup Status **/
         $statusCode = $response->getStatusCode();
-        $statusMessage = $response->getStatusMessage();
 
         $phpSapiName = substr(php_sapi_name(), 0, 3);
 
         if ($phpSapiName == 'cgi' || $phpSapiName == 'fpm') {
-            header('Status: ' . $statusCode . ' ' . $statusMessage);
+            header('Status: ' . $statusCode);
         }
         else {
             $protocol = isset($_SERVER['SERVER_PROTOCOL']) ? $_SERVER['SERVER_PROTOCOL'] : 'HTTP/1.0';
-            header($protocol . ' ' . $statusCode . ' ' . $statusMessage);
+            header($protocol . ' ' . $statusCode);
         }
 
         /** Setup Headers **/
