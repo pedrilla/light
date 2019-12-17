@@ -1,8 +1,11 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Light\Model\Driver\Mongodb;
+
+use Light\Model;
+use mysql_xdevapi\Exception;
 
 /**
  * Class Driver
@@ -18,7 +21,7 @@ class Driver extends \Light\Model\Driver\DriverAbstract
     /**
      * @return \MongoDB\Driver\Manager
      */
-    public function getManager() : \MongoDB\Driver\Manager
+    public function getManager(): \MongoDB\Driver\Manager
     {
         $managerConfigKey = md5(var_export([], true));
 
@@ -74,11 +77,12 @@ class Driver extends \Light\Model\Driver\DriverAbstract
             $this->getModel()->getData()
         );
 
+        $data = $this->_normalizeDataTypes($data);
+
         if ($this->getModel()->id) {
             $cond = $this->_replaceIdToObjectId(['id' => $this->getModel()->id]);
             $bulk->update($cond, ['$set' => $data], ['multi' => true, 'upsert' => false]);
-        }
-        else {
+        } else {
             $this->getModel()->id = (string)$bulk->insert($data);
         }
 
@@ -103,7 +107,7 @@ class Driver extends \Light\Model\Driver\DriverAbstract
      *
      * @return int
      */
-    public function remove($cond = null, int $limit = null) : int
+    public function remove($cond = null, int $limit = null): int
     {
         if ($this->getModel()->id) {
 
@@ -112,8 +116,7 @@ class Driver extends \Light\Model\Driver\DriverAbstract
             ]);
 
             $limit = 1;
-        }
-        else {
+        } else {
             list($cond) = $this->_processQuery($cond);
         }
 
@@ -143,6 +146,8 @@ class Driver extends \Light\Model\Driver\DriverAbstract
     {
         list($cond, $sort) = $this->_processQuery($cond, $sort);
 
+        $cond = $this->_normalizeDataTypes($cond);
+
         $query = new \MongoDB\Driver\Query($cond, [
             'limit' => 1,
             'sort' => $sort
@@ -170,6 +175,8 @@ class Driver extends \Light\Model\Driver\DriverAbstract
     {
         list($cond, $sort) = $this->_processQuery($cond, $sort);
 
+        $cond = $this->_normalizeDataTypes($cond);
+
         $query = new \MongoDB\Driver\Query($cond, [
             'sort' => $sort,
             'skip' => $offset,
@@ -183,9 +190,11 @@ class Driver extends \Light\Model\Driver\DriverAbstract
      * @param array|string|null $cond
      * @return int
      */
-    public function count($cond = null) : int
+    public function count($cond = null): int
     {
         list($cond) = $this->_processQuery($cond, null);
+
+        $cond = $this->_normalizeDataTypes($cond);
 
         $command = new \MongoDB\Driver\Command([
             "count" => $this->getModel()->getMeta()->getCollection(),
@@ -199,8 +208,8 @@ class Driver extends \Light\Model\Driver\DriverAbstract
         try {
             $res = current($cursor->toArray());
             return $res->n;
+        } catch (\Exception $e) {
         }
-        catch (\Exception $e) {}
 
         return 0;
     }
@@ -210,7 +219,7 @@ class Driver extends \Light\Model\Driver\DriverAbstract
      *
      * @return int
      */
-    public function batchInsert(array $data = null) : int
+    public function batchInsert(array $data = null): int
     {
         $bulk = new \MongoDB\Driver\BulkWrite();
 
@@ -222,7 +231,11 @@ class Driver extends \Light\Model\Driver\DriverAbstract
             $model = new $modelClassName();
             $model->populate($dataItem);
 
-            $bulk->insert($model->getData());
+            $bulk->insert(
+                $this->_normalizeDataTypes(
+                    $model->getData()
+                )
+            );
         }
 
         if ($bulk->count()) {
@@ -263,7 +276,7 @@ class Driver extends \Light\Model\Driver\DriverAbstract
      *
      * @return array
      */
-    private function _processQuery($cond = null, $sort = null) : array
+    private function _processQuery($cond = null, $sort = null): array
     {
         if ($cond === null) {
             $cond = [];
@@ -276,5 +289,23 @@ class Driver extends \Light\Model\Driver\DriverAbstract
         }
 
         return [$cond, $sort];
+    }
+
+    /**
+     * @param array $data
+     * @return array
+     */
+    private function _normalizeDataTypes(array $data = [])
+    {
+        foreach ($data as $name => $value) {
+
+            if ($value instanceof Model) {
+
+                $data[$name] = $value->{$value->getMeta()->getPrimary()};
+            }
+
+        }
+
+        return $data;
     }
 }

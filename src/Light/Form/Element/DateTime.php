@@ -5,25 +5,25 @@ declare(strict_types = 1);
 namespace Light\Form\Element;
 
 /**
- * Class Date
+ * Class DateTime
  * @package Light\Form\Element
  */
-class Date extends ElementAbstract
+class DateTime extends ElementAbstract
 {
     /**
      * @var string
      */
-    public $elementTemplate = 'element/date';
+    public $elementTemplate = 'element/date-time';
 
     /**
      * @var string
      */
-    public $format = 'YYYY-MM-DD';
+    public $format = 'YYYY-MM-DD HH:mm';
 
     /**
      * @var string
      */
-    public $phpFormat = 'Y-m-d';
+    public $phpFormat = 'Y-m-d H:i';
 
     /**
      * @return string

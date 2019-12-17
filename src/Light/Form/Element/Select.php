@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 namespace Light\Form\Element;
 
+use Light\Model;
 use Light\Model\Driver\CursorAbstract;
 use Light\Model\Driver\Flat\Cursor;
 
@@ -29,6 +30,11 @@ class Select extends ElementAbstract
     public $field = null;
 
     /**
+     * @var string
+     */
+    public $optionsClassName = null;
+
+    /**
      * @return array
      */
     public function getOptions()
@@ -42,6 +48,14 @@ class Select extends ElementAbstract
     public function setOptions($options): void
     {
         $this->options = $options;
+
+        if (is_object($this->options)) {
+
+            if (is_subclass_of($this->options, 'Light\\Model\\Driver\\CursorAbstract')) {
+
+                $this->optionsClassName = get_class($this->options[0]);
+            }
+        }
     }
 
     /**
@@ -94,5 +108,52 @@ class Select extends ElementAbstract
         }
 
         return $options;
+    }
+
+    /**
+     * @return bool|int|Model|object|string|null
+     */
+    public function getValue()
+    {
+        $value = parent::getValue();
+
+        if ($this->optionsClassName) {
+
+            foreach ($this->options as $option) {
+
+                if ($option['id'] == $value) {
+
+                    return $option;
+                }
+            }
+        }
+
+        return $value;
+    }
+
+    /**
+     * @return bool|int|object|string|null
+     */
+    public function getNormalizedValue()
+    {
+        $value = parent::getValue();
+
+        if ($this->optionsClassName && !is_null($value)) {
+
+            foreach ($this->options as $option) {
+
+                if (is_string($value)) {
+                    if ($option['id'] == $value) {
+                        return $value;
+                    }
+                }
+
+                if ($option['id'] == $value->id) {
+                    return $option['id'];
+                }
+            }
+        }
+
+        return $value;
     }
 }

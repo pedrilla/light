@@ -1,10 +1,10 @@
-<?php /** @var \Light\Form\Element\Date $element */ ?>
+<?php /** @var \Light\Form\Element\DateTime $element */ ?>
 <?php $element = $this->element; ?>
 
 <input type="text"
        class="bmd-input"
        autocomplete="off"
-       data-datepicker="true"
+       data-datetimepicker="true"
        data-format="<?php echo $element->getFormat(); ?>"
        <?php if ($element->isReadOnly()) : ?>disabled="disabled"<?php endif; ?>
        id="<?php echo $element->getName(); ?>"
