@@ -1,0 +1,43 @@
+<?php /** @var Light\Model[] $rows */ ?>
+<?php $rows = $this->rows; ?>
+<?php $header = $this->header; ?>
+
+<div data-position-container="true">
+
+    <form data-language-action="<?php echo $this->uri(['action' => 'position']); ?>"
+          data-set-position-action="<?php echo $this->uri(['action' => 'setPosition']); ?>"
+          data-position-form="true">
+
+        <div class="row">
+
+            <div class="col-xs-12">
+
+                <?php if (count($rows)) : ?>
+
+                    <div data-sortable-list="true" class="positioning sortable list">
+
+                        <?php foreach ($rows as $row) : ?>
+
+                            <div class="item box-shadow">
+                                <input type="hidden" value="<?php echo $row->id; ?>" name="items[]"/>
+                                <?php echo $row->{$header}; ?>
+                                <i class="fa fa-ellipsis-v"></i>
+                            </div>
+
+                        <?php endforeach; ?>
+
+                    </div>
+
+                <?php else: ?>
+
+                    <?php echo $this->partial('table/partial/empty'); ?>
+
+                <?php endif; ?>
+
+            </div>
+
+        </div>
+
+    </form>
+
+</div>
