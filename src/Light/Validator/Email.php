@@ -16,8 +16,6 @@ class Email extends ValidatorAbstract
      */
     public function isValid($value): bool
     {
-        $value = $value ?? '';
-
         if (empty($value) && $this->allowNull) {
             return true;
         }

@@ -21,9 +21,9 @@ class ErrorController extends Controller
     private $_exceptionEnabled = true;
 
     /**
-     * @return \Exception|\Light\Exception
+     * @return \Exception
      */
-    public function getException()
+    public function getException(): \Exception
     {
         return $this->_exception;
     }

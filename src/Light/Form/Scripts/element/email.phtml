@@ -2,11 +2,9 @@
 <?php $element = $this->element; ?>
 
 <input type="email"
-       class="bmd-input"
+       class="form-control"
        <?php if ($element->isReadOnly()) : ?>readonly="readonly"<?php endif; ?>
        id="<?php echo $element->getName(); ?>"
        name="<?php echo $element->getName(); ?>"
+       placeholder="<?php echo $element->getPlaceholder(); ?>"
        value="<?php echo htmlspecialchars($element->getValue()); ?>" />
-
-<label class="bmd-label"><?php echo $element->getLabel() ?? $element->getName(); ?></label>
-<span class="bmd-bar"></span>

@@ -4,12 +4,11 @@
 <input type="text"
        class="bmd-input"
        autocomplete="off"
-       data-datepicker="true"
-       data-format="<?php echo $element->getFormat(); ?>"
+       data-datetimepicker="true"
        <?php if ($element->isReadOnly()) : ?>disabled="disabled"<?php endif; ?>
        id="<?php echo $element->getName(); ?>"
        name="<?php echo $element->getName(); ?>"
-       value="<?php echo date($element->getPhpFormat(), $element->getValue()); ?>" />
+       value="<?php echo date($element->getFormat(), $element->getValue()); ?>" />
 
 <label class="bmd-label"><?php echo $element->getLabel(); ?></label>
 <span class="bmd-bar"></span>

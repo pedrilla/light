@@ -16,8 +16,6 @@ class Trim extends FilterAbstract
      */
     public function filter($value)
     {
-        $value = $value ?? '';
-
         return trim($value);
     }
 }

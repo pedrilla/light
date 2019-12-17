@@ -4,9 +4,8 @@
 <?php $value = ['value' => null, 'title' => $element->getHint()]; ?>
 
 <?php
-
     foreach ($element->getNormalizedOptions() as $option => $name) {
-        if ($option == $element->getNormalizedValue()) {
+        if ($option == $element->getValue()) {
             $value = ['value' => $option, 'title' => $name];
         }
     }
@@ -30,7 +29,7 @@
         <?php foreach ($element->getNormalizedOptions() as $value => $name) : ?>
 
             <li>
-                <a <?php if ($element->getNormalizedValue() == $value) : ?> class="bmd-bg-primary bmd-text-grey-50" <?php endif; ?>
+                <a <?php if ($element->getValue() == $value) : ?> class="bmd-bg-primary bmd-text-grey-50" <?php endif; ?>
                         data-option="<?php echo $value; ?>"
                         data-value="<?php echo $name; ?>">
                     <?php echo $name; ?>

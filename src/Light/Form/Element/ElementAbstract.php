@@ -4,10 +4,7 @@ declare(strict_types = 1);
 
 namespace Light\Form\Element;
 
-use Light\Exception;
 use Light\Filter\FilterAbstract;
-use Light\Form\Exception\FilterClassWasNotFound;
-use Light\Form\Exception\ValidatorClassWasNotFound;
 use Light\Validator\ValidatorAbstract;
 use Light\View;
 
@@ -51,7 +48,7 @@ abstract class ElementAbstract
     /**
      * @var bool
      */
-    public $allowNull = false;
+    public $allowNull = true;
 
     /**
      * @var bool
@@ -323,29 +320,8 @@ abstract class ElementAbstract
 
         foreach ($this->getValidators() as $validatorClassName => $settings) {
 
-            if (is_int($validatorClassName)) {
-                $validatorClassName = $settings;
-            }
-
-            try {
-                if (!class_exists($validatorClassName)) {
-                    throw new ValidatorClassWasNotFound($validatorClassName);
-                }
-            }
-            catch (\Exception $exception) {
-
-                if (!($exception instanceof ValidatorClassWasNotFound)) {
-
-                    if (isset($settings['isValid'])) {
-
-                        if (!$settings['isValid']($value)) {
-                            $this->errorMessages[] = $settings['message'] ?? '';
-                        }
-                        continue;
-                    }
-                }
-
-                throw $exception;
+            if (!class_exists($validatorClassName)) {
+                throw new \Light\Exception\ValidatorClassWasNotFound($validatorClassName);
             }
 
             /** @var ValidatorAbstract $validator */
@@ -360,10 +336,6 @@ abstract class ElementAbstract
 
         $this->value = $value;
 
-        if (empty($value) && !$this->isAllowNull()) {
-            $this->errorMessages[] = 'Поле не может быть пустым';
-        }
-
         if (!count($this->errorMessages)) {
 
             foreach ($this->getFilters() as $filterClassName => $settings) {
@@ -372,21 +344,10 @@ abstract class ElementAbstract
                     $filterClassName = $settings;
                 }
 
-                try {
-                    /** @var FilterAbstract $filter */
-                    $filter = new $filterClassName($settings['options'] ?? []);
-                }
-                catch (\Exception $exception) {
+                /** @var FilterAbstract $filter */
+                $filter = new $filterClassName($settings['options'] ?? []);
 
-                    try {
-                        $filter = $filterClassName($value);
-                    }
-                    catch (\Exception $exception) {
-                        throw new FilterClassWasNotFound($filterClassName);
-                    }
-                }
-
-                $this->value = $filter->filter($this->value);
+                $value = $filter->filter($value);
             }
 
             return true;

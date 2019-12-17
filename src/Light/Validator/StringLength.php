@@ -37,8 +37,6 @@ class StringLength extends Number
      */
     public function isValid($value): bool
     {
-        $value = $value ?? '';
-
         if (empty($value) && $this->allowNull) {
             return true;
         }

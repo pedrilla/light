@@ -4,15 +4,11 @@ declare( strict_types = 1 );
 
 namespace Light;
 
-use Light\Model\ModelInterface;
-
 /**
  * Class Map
  * @package Light
- *
- * @method static array|Map execute(array|ModelInterface $data, string|array $context = null, array $userData = [])
  */
-class Map implements Map\MapInterface, \Iterator
+abstract class Map implements Map\MapInterface, \Iterator
 {
     /**
      * @var array|object|Model
@@ -33,11 +29,6 @@ class Map implements Map\MapInterface, \Iterator
      * @var string
      */
     private $_context = null;
-
-    /**
-     * @var array
-     */
-    public $_commonData = [];
 
     /**
      * @return array|Model|object
@@ -94,18 +85,15 @@ class Map implements Map\MapInterface, \Iterator
     {
         $contextMap = $this->_getContextMap($this->getContext());
 
-        // var_dump($this->getContext()); die();
-
         $transformedDataRow = [];
 
         foreach ($contextMap as $name => $value) {
 
             if ($this->_isSingleData()) {
-
-                $transformedDataRow[$name] = $this->_transform($this->getData(), $value);
+                $transformedDataRow[$value] = $this->_transform($this->getData(), $name);
             }
             else {
-                $transformedDataRow[$name] = $this->_transform($this->_getDataRow($this->_index), $value);
+                $transformedDataRow[$value] = $this->_transform($this->_getDataRow($this->_index), $name);
             }
 
         }
@@ -158,7 +146,7 @@ class Map implements Map\MapInterface, \Iterator
      *
      * @throws Map\Exception\MapContextWasNotFound
      */
-    public static function executeMap($data, string $context = 'common', array $userData = []) : Map
+    public static function execute($data, string $context = 'common', array $userData = []) : Map
     {
         $mapClassName = static::class;
 
@@ -176,52 +164,6 @@ class Map implements Map\MapInterface, \Iterator
         }
 
         throw new Map\Exception\MapContextWasNotFound($mapClassName, $context);
-    }
-
-    /**
-     * @param array|Model\ModelInterface $data
-     * @param string $context
-     *
-     * @return array
-     */
-    public static function executeArray($data, array $context = [])
-    {
-        $map = new self();
-
-        $map->setData($data);
-        $map->setContext('common');
-        $map->_commonData = $context;
-
-        return $map->toArray();
-    }
-
-    /**
-     * @param string $name
-     * @param array $arguments
-     *
-     * @return array|Map
-     *
-     * @throws Exception
-     * @throws Map\Exception\MapContextWasNotFound
-     */
-    public static function __callStatic($name, $arguments)
-    {
-        if ($name == 'execute') {
-
-            $data = $arguments[0];
-
-            if (!isset($arguments[1])) {
-                $arguments[1] = 'common';
-            }
-
-            if (is_array($arguments[1])) {
-                return self::executeArray($arguments[0], $arguments[1]);
-            }
-
-            return self::executeMap($arguments[0], $arguments[1]);
-        }
-
-        throw new Exception([], 'Method ' . $name . ' not implemented', 500);
     }
 
     /**
@@ -305,28 +247,24 @@ class Map implements Map\MapInterface, \Iterator
 
     /**
      * @param $dataRow
-     * @param string|callable $name
+     * @param string $name
      *
      * @return mixed
      */
-    private function _transform($dataRow, $value)
+    private function _transform($dataRow, string $name)
     {
-        if (is_callable($value)) {
-            return $value($dataRow);
-        }
-
-        $getter = [$this, 'get' . ucfirst($value)];
+        $getter = [$this, 'get' . ucfirst($name)];
 
         if (is_callable($getter)) {
             return call_user_func_array($getter, ['data' => $dataRow]);
         }
 
         if (is_array($dataRow)) {
-            return isset($dataRow[$value]) ? $dataRow[$value] : null;
+            return isset($dataRow[$name]) ? $dataRow[$name] : null;
         }
 
         if (is_object($dataRow)) {
-            return isset($dataRow->$value) ? $dataRow->$value : null;
+            return isset($dataRow->$name) ? $dataRow->$name : null;
         }
 
         return null;
@@ -339,13 +277,5 @@ class Map implements Map\MapInterface, \Iterator
     private function _getContextMap(string $context) : array
     {
         return call_user_func_array([$this, $context], []);
-    }
-
-    /**
-     * @return array
-     */
-    public function common(): array
-    {
-        return $this->_commonData;
     }
 }

@@ -7,8 +7,6 @@ namespace Light;
 /**
  * Class Model
  * @package Light
- *
- * @method int remove (array $cond = [], int $limit = null)
  */
 class Model implements Model\ModelInterface, \ArrayAccess
 {
@@ -250,7 +248,7 @@ class Model implements Model\ModelInterface, \ArrayAccess
      * @param array $data
      * @return void
      */
-    public function populate(array $data, bool $fromSet = true)
+    public function populate(array $data)
     {
         self::__call(__FUNCTION__, func_get_args());
     }

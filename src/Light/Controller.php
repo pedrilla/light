@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace Light;
 
@@ -103,31 +103,6 @@ class Controller
         die();
     }
 
-    /**
-     * @param string $name
-     * @param null $default
-     * @param array $filters
-     *
-     * @return array|int|mixed|string|null
-     */
-    public function getParam(string $name, $default = null, array $filters = [])
-    {
-        return $this->getRequest()->getParam($name, $default, $filters);
-    }
-
-    /**
-     * @return array
-     */
-    public function getParams()
-    {
-        return $this->getRequest()->getParams();
-    }
-
-    public function init()
-    {
-    }
-
-    public function postRun()
-    {
-    }
+    public function init() {}
+    public function postRun() {}
 }

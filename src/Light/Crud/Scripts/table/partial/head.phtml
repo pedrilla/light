@@ -4,8 +4,6 @@
 
         <?php $index = 0; foreach ($this->header as $name => $header) : ?>
 
-            <?php $header['type'] = $header['type'] ?? 'text'; ?>
-
             <?php if ($header['type'] == 'bool') : ?>
 
                 <th class="<?php if (empty($header['static']) && $index > 0) : ?>hidden-xs <?php endif; ?> text-center" style="width: 111px;">

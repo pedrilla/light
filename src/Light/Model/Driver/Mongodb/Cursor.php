@@ -59,7 +59,7 @@ class Cursor extends \Light\Model\Driver\CursorAbstract
 
         /** @var \Light\Model $model */
         $model = new $modelClassName();
-        $model->populate($this->processDataRow($data), false);
+        $model->populate($this->processDataRow($data));
 
         return $model;
     }
