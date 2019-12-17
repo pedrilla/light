@@ -4,6 +4,10 @@ declare(strict_types = 1);
 
 namespace Light\Model\Driver;
 
+use Light\Model;
+use Light\Model\Driver\Exception\PropertyHasDifferentType;
+use Light\Registry;
+
 /**
  * Interface DocumentInterface
  * @package Light\Driver
@@ -66,10 +70,14 @@ abstract class DocumentAbstract implements \ArrayAccess
      *
      * @param array $data
      */
-    public function populate(array $data)
+    public function populate(array $data, bool $fromSet = true)
     {
         foreach ($this->getModel()->getMeta()->getProperties() as $property) {
-            $this->setProperty($property, $data[$property->getName()] ?? null);
+
+            if (isset($data[$property->getName()])) {
+
+                $this->setProperty($property, $data[$property->getName()], $fromSet);
+            }
         }
     }
 
@@ -108,7 +116,7 @@ abstract class DocumentAbstract implements \ArrayAccess
             if ($property->getName() == $name) {
 
                 $value = isset($data[$name])?$data[$name]:null;
-                return $this->_castDataType($property, $value, true, $toArray);
+                return $this->_castDataType($property, $value, false, $toArray);
             }
         }
 
@@ -173,108 +181,46 @@ abstract class DocumentAbstract implements \ArrayAccess
      */
     protected function _castDataType(\Light\Model\Meta\Property $property, $value, bool $isSet = true, bool $toArray = false)
     {
-        if (gettype($value) == 'object') {
-
-            if (($value instanceof \stdClass)) {
-                return (array)$value;
-            }
-
-            if (get_class($value) == $property->getType()) {
-
-                if (is_subclass_of($value, '\\Light\\Model')) {
-
-                    /** @var \Light\Model $value*/
-
-                    if ($toArray) {
-                        return $value->toArray();
-                    }
-
-                    if ($isSet) {
-                        return $value->{$value->getMeta()->getPrimary()};
-                    }
-
-                    return $value;
-                }
-            }
-        }
-
-        else if (class_exists('\\' . $property->getType(), false) && is_subclass_of('\\' . $property->getType(), '\\Light\\Model')) {
-
-            $modelClassName = '\\' . $property->getType();
-
-            if ($value) {
-
-                if (!$isSet) {
-                    return $value;
-                }
-
-                /** @var \Light\Model $model */
-                $model = new $modelClassName();
-
-                /** @var \Light\Model $modelClassName */
-                $model = $modelClassName::fetchObject([
-                    $model->getMeta()->getPrimary() => $value
-                ]);
-            }
-            else {
-                $model = new $modelClassName();
-            }
-
-            if (!$isSet && !$value) {
-                return null;
-            }
-
-            if ($toArray && !$value) {
-                return null;
-            }
-            
-            if ($toArray) {
-                return $model->toArray();
-            }
-
-            return $model;
-        }
-
-        else if (is_scalar($value)) {
-
-            $isValidScalarType = false;
-
-            if ($property->getType() == 'string') {
-                $value = strval($value);
-                $isValidScalarType = true;
-            }
-
-            else if ($property->getType() == 'float') {
-                $value = floatval($value);
-                $isValidScalarType = true;
-            }
-
-            else if ($property->getType() == 'double') {
-                $value = doubleval($value);
-                $isValidScalarType = true;
-            }
-
-            else if ($property->getType() == 'boolean' || $property->getType() == 'bool') {
-                $value = boolval($value);
-                $isValidScalarType = true;
-            }
-
-            else if ($property->getType() == 'int' || $property->getType() == 'integer' ) {
-                $value = intval($value);
-                $isValidScalarType = true;
-            }
-
-            if ($property->getType() == gettype($value) || $isValidScalarType) {
-                return $value;
-            }
-        }
-
-        else if (gettype($value) == $property->getType()) {
+        if (in_array($property->getType(), ['integer', 'array', 'string', 'boolean', 'NULL'])) {
+            settype($value, $property->getType());
             return $value;
         }
 
-        else if (is_null($value)) {
-            return null;
+        if (class_exists($property->getType(), true) && is_subclass_of($property->getType(), '\\Light\\Model')) {
+
+            if (is_string($value)) {
+
+                /** @var Model $modelClassName */
+                $modelClassName = $property->getType();
+
+                /** @var Model $modelClassObject */
+                $modelClassObject = new $modelClassName;
+
+                $object = $modelClassName::fetchOne([
+                    $modelClassObject->getMeta()->getPrimary() => $value
+                ]);
+
+                if ($toArray) {
+                    return $object->toArray();
+                }
+
+                return $object;
+            }
+
+            else if (is_null($value)) {
+                return null;
+            }
+
+            if (!$isSet) {
+
+                if ($toArray) {
+                    return $value->toArray();
+                }
+
+                return $value;
+            }
+
+            return $value->{$value->getMeta()->getPrimary()};
         }
 
         throw new Exception\PropertyHasDifferentType(

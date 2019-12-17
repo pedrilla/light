@@ -73,11 +73,64 @@ abstract class Crud extends Controller
     }
 
     /**
-     * @return string
+     * @return bool
      */
     public function getPositioning()
     {
         return $this->positioning ?? false;
+    }
+
+    /**
+     * @return false|string
+     * @throws Exception
+     */
+    public function position()
+    {
+        $this->getView()->setLayoutEnabled(false);
+
+        /** @var Model $modelClassName */
+        $modelClassName = $this->getModelClassName();
+
+        /** @var Model $model */
+        $model = new $modelClassName();
+
+        if (!$model->getMeta()->hasProperty('position')) {
+            throw new Exception('Model doesn\'t have position property');
+        }
+
+        $this->view->setVars([
+            'rows' => $model::fetchAll(),
+            'header' => $this->getPositioning()
+        ]);
+
+        return $this->view->render('table/position');
+    }
+
+    public function setPosition()
+    {
+        $this->getView()->setLayoutEnabled(false);
+
+        /** @var Model $modelClassName */
+        $modelClassName = $this->getModelClassName();
+
+        /** @var Model $model */
+        $model = new $modelClassName();
+
+        if (!$model->getMeta()->hasProperty('position')) {
+            throw new Exception('Model doesn\'t have position property');
+        }
+
+        foreach ($this->getRequest()->getParam('items', []) as $index => $id) {
+
+            $model = $modelClassName::fetchOne([
+                'id' => $id
+            ]);
+
+            $model->position = $index;
+            $model->save();
+        }
+
+        return [];
     }
 
 
@@ -167,7 +220,7 @@ abstract class Crud extends Controller
      */
     public function getItemsPerPage()
     {
-        return 20;
+        return 999;
     }
 
     /**
@@ -175,7 +228,7 @@ abstract class Crud extends Controller
      */
     public function getExportHeader()
     {
-        return $this->exportHeader ?? [];
+        return $this->exportHeader ?? $this->header ?? [];
     }
 
     /**
@@ -252,7 +305,8 @@ abstract class Crud extends Controller
             }
 
             else if ($filter['type'] == 'model') {
-                $conditions[$filter['by']] = $filter['value'];
+
+                $conditions[$filter['by'] ?? 'id'] = $filter['value'];
             }
 
             else if ($filter['type'] == 'datetime') {
@@ -328,9 +382,8 @@ abstract class Crud extends Controller
         if ($this->getRequest()->getGet('modal')) {
             return $this->view->render('table/ajax');
         }
-        else {
-            return $this->view->render('table/index');
-        }
+
+        return $this->view->render('table/index');
     }
 
     public function export()
@@ -355,7 +408,7 @@ abstract class Crud extends Controller
 
             foreach ($this->getExportHeader() as $name => $struct) {
 
-                $cols[] = $this->exportType($row->{$struct['field']}, $struct['type']);
+                $cols[] = $this->exportType($row->{$name}, $struct['type'] ?? 'text');
             }
 
             $response[] = implode(',', $cols);
@@ -364,7 +417,7 @@ abstract class Crud extends Controller
         $fileName = $this->getExportFileName() . '_' . date('c') . '.csv';
         $this->getResponse()->setHeader('Content-Disposition', 'attachment;filename=' . $fileName);
 
-        echo implode(";\n", $response);
+        return implode(";\n", $response) . ';';
     }
 
     public function manage()
@@ -377,7 +430,7 @@ abstract class Crud extends Controller
         $formClassName = $this->getFormClassName();
 
         $model = $modelClassName::fetchObject([
-            'id' => $this->getRequest()->getGet('id')
+            'id' => $this->getRequest()->getParam('id')
         ]);
 
         /** @var Form $form */
@@ -442,9 +495,9 @@ abstract class Crud extends Controller
     }
 
     /**
-     * @param $value
-     * @param $type
-     * @return false|null|string
+     * @param mixed  $value
+     * @param string $type
+     * @return false|string|null
      */
     public function exportType($value, $type)
     {
@@ -452,6 +505,9 @@ abstract class Crud extends Controller
 
             case 'text':
                 return $value;
+
+            case 'bool':
+                return (bool)$value ? 'Да' : 'Нет';
 
             case 'date':
                 return date('Y/m/d H:i:s', $value);

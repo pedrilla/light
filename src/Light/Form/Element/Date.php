@@ -18,7 +18,12 @@ class Date extends ElementAbstract
     /**
      * @var string
      */
-    public $format = 'Y/m/d';
+    public $format = 'YYYY-MM-DD';
+
+    /**
+     * @var string
+     */
+    public $phpFormat = 'Y-m-d';
 
     /**
      * @return string
@@ -34,6 +39,22 @@ class Date extends ElementAbstract
     public function setFormat(string $format): void
     {
         $this->format = $format;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPhpFormat(): string
+    {
+        return $this->phpFormat;
+    }
+
+    /**
+     * @param string $phpFormat
+     */
+    public function setPhpFormat(string $phpFormat): void
+    {
+        $this->phpFormat = $phpFormat;
     }
 
     /**

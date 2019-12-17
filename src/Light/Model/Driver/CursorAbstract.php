@@ -152,7 +152,7 @@ abstract class CursorAbstract implements \Iterator, \ArrayAccess, \Countable
 
             /** @var \Light\Model $model */
             $model = new $modelClassName();
-            $model->populate(static::processDataRow($data[$index]));
+            $model->populate(static::processDataRow($data[$index]), false);
 
             $this->_documents[$index] = $model;
 

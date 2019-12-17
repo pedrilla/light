@@ -1,5 +1,9 @@
 <?php $index = 0; foreach ($this->header as $key => $col) : ?>
 
+    <?php if (isset($col['source'])) { $col['type'] = 'custom';} ?>
+
+    <?php $col['type'] = $col['type'] ?? 'text'; ?>
+
     <?php if ($col['type'] == 'bool') : ?>
 
         <td class="<?php if (empty($col['static']) && $index > 0) : ?>hidden-xs <?php endif; ?> text-center">
@@ -22,10 +26,28 @@
             <a data-force="true" href="<?php echo $this->row->$key; ?>/" target="_blank"><?php echo $this->row->$key; ?></a>
         </td>
 
+    <?php elseif ($col['type'] == 'phone') : ?>
+
+        <td <?php if (empty($col['static']) && $index > 0) : ?> class="hidden-xs" <?php endif; ?>>
+            <a data-force="true" href="tel:<?php echo $this->row->$key; ?>"><?php echo $this->row->$key; ?></a>
+        </td>
+
+    <?php elseif ($col['type'] == 'email') : ?>
+
+        <td <?php if (empty($col['static']) && $index > 0) : ?> class="hidden-xs" <?php endif; ?>>
+            <a data-force="true" href="mailto:<?php echo $this->row->$key; ?>"><?php echo $this->row->$key; ?></a>
+        </td>
+
     <?php elseif ($col['type'] == 'date') : ?>
 
         <td <?php if (empty($col['static']) && $index > 0) : ?> class="hidden-xs" <?php endif; ?>>
-            <?php echo date('Y/m/d H:i:s', $this->row->$key); ?>
+            <?php echo date('Y/m/d', $this->row->$key); ?>
+        </td>
+
+    <?php elseif ($col['type'] == 'datetime') : ?>
+
+        <td <?php if (empty($col['static']) && $index > 0) : ?> class="hidden-xs" <?php endif; ?>>
+            <?php echo date('Y/m/d в H:i', $this->row->$key); ?>
         </td>
 
     <?php elseif ($col['type'] == 'model') : ?>
@@ -56,6 +78,12 @@
                  data-image-large="<?php echo $this->row[$key] ?? ''; ?>"
                  style="background-image: url(<?php echo $this->row[$key] ?? ''; ?>); "></div>
         </td>
+
+    <?php elseif ($col['type'] == 'custom') : ?>
+
+      <td <?php if (empty($col['static']) && $index > 0) : ?> class="hidden-xs" <?php endif; ?>>
+        <?php echo $col['source']($this->row); ?>
+      </td>
 
     <?php else : ?>
 
