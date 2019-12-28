@@ -381,12 +381,6 @@ final class Front
                     $plugin->postRun($this->_request, $this->_response, $this->_router);
                 }
 
-                $needLayout = true;
-
-                if (!is_null($content)) {
-                    $needLayout = false;
-                }
-
                 if (is_null($content) && $this->_view->isAutoRender()) {
                     $content = $this->_view->render();
                 }
@@ -400,7 +394,7 @@ final class Front
                     $content = json_encode($content, JSON_PRETTY_PRINT);
                     $this->_response->setHeader('Content-type', 'application/json');
                 }
-                else if ($this->_view->isLayoutEnabled() && $needLayout) {
+                else if ($this->_view->isLayoutEnabled()) {
                     $this->_view->setContent($content ?? '');
                     $content = $this->_view->renderLayout();
                 }
