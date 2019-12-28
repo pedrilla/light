@@ -1,44 +1,47 @@
 <thead>
 
-    <tr>
+<tr>
 
-        <?php $index = 0; foreach ($this->header as $name => $header) : ?>
+    <?php $index = 0;
+    foreach ($this->header as $name => $header) : ?>
 
-            <?php $header['type'] = $header['type'] ?? 'text'; ?>
+        <?php $header['type'] = $header['type'] ?? 'text'; ?>
 
-            <?php if ($header['type'] == 'bool') : ?>
+        <?php if ($header['type'] == 'bool') : ?>
 
-                <th class="<?php if (empty($header['static']) && $index > 0) : ?>hidden-xs <?php endif; ?> text-center" style="width: 111px;">
+            <th class="<?php if (empty($header['static']) && $index > 0) : ?>hidden-xs <?php endif; ?> text-center" style="width: 111px;">
 
-                    <?php echo str_replace(' ', '&nbsp;', $header['title']); ?>
+                <?php echo str_replace(' ', '&nbsp;', $header['title']); ?>
 
-                </th>
+            </th>
 
 
-            <?php elseif ($header['type'] == 'image' || $header['type'] == 'images') : ?>
+        <?php elseif ($header['type'] == 'image' || $header['type'] == 'images') : ?>
 
-                <th class="<?php if (empty($header['static']) && $index > 0) : ?>hidden-xs <?php endif; ?>">
+            <th class="<?php if (empty($header['static']) && $index > 0) : ?>hidden-xs <?php endif; ?>">
 
-                    <span><?php echo str_replace(' ', '&nbsp;', $header['title']); ?></span>
+                <span><?php echo str_replace(' ', '&nbsp;', $header['title']); ?></span>
 
-                </th>
+            </th>
 
-            <?php else : ?>
+        <?php else : ?>
 
-                <th class="<?php if (empty($header['static']) && $index > 0) : ?>hidden-xs <?php endif; ?>">
+            <th class="<?php if (empty($header['static']) && $index > 0) : ?>hidden-xs <?php endif; ?>">
 
-                    <?php echo str_replace(' ', '&nbsp;', $header['title']); ?>
+                <?php echo str_replace(' ', '&nbsp;', $header['title']); ?>
 
-                </th>
+            </th>
 
-            <?php endif; ?>
+        <?php endif; ?>
 
-            <?php $index ++; ?>
-            
-        <?php endforeach; ?>
+        <?php $index++; ?>
 
+    <?php endforeach; ?>
+
+    <?php if (count($this->controls)) : ?>
         <th class="text-right" style="width: 10px;"></th>
+    <?php endif; ?>
 
-    </tr>
+</tr>
 
 </thead>

@@ -25,11 +25,7 @@ abstract class CrudSingle extends Crud
         $model = $modelClassName::fetchObject();
 
         /** @var Form $form */
-        $form = new $formClassName([
-            'data' => $model
-        ]);
-
-
+        $form = $this->getForm($model);
 
         if ($this->getRequest()->isPost()) {
 
@@ -69,10 +65,6 @@ abstract class CrudSingle extends Crud
 
                     $this->didSave($model);
                 }
-
-                return implode(':', [
-                    'ok', $this->getRequest()->getPost('return-url')
-                ]);
             }
         }
 

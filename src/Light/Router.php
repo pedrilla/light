@@ -165,16 +165,22 @@ class Router
     /**
      * @param array $requestedRoute
      * @param array $params
+     * @param bool $reset
+     *
      * @return string
      *
      * @throws DomainMustBeProvided
      * @throws RouterVarMustBeProvided
      */
-    public function assemble(array $requestedRoute = [], array $params = [])
+    public function assemble(array $requestedRoute = [], array $params = [], bool $reset = false)
     {
         $module = $requestedRoute['module'] ?? $this->_module;
-        $controller = $requestedRoute['controller'] ?? $this->_controller;
-        $action = $requestedRoute['action'] ?? $this->_action;
+        $controller = $requestedRoute['controller'] ?? ($reset ? '' : $this->_controller);
+        $action = $requestedRoute['action'] ?? ($reset ? '' : $this->_action);
+
+        if (!$reset) {
+            $params = array_merge($this->_urlParams, $params);
+        }
 
         $uri = null;
         $selectedDomain = null;
@@ -187,13 +193,22 @@ class Router
 
                 foreach ($router['routes'] ?? [] as $routeUri => $route) {
 
+                    if ($routeUri == '*' && is_callable($route)) {
+                        continue;
+                    }
+
+                    $routeUri = ($router['prefix'] ?? '') . $routeUri;
+
                     $currentRouteSettings = [
                         'controller' => $route['controller'] ?? 'index',
                         'action' => $route['action'] ?? 'index'
                     ];
 
-                    if ($controller == $currentRouteSettings['controller']
-                        && $action == $currentRouteSettings['action']) {
+                    $chController = $controller == '' ? 'index' : $controller;
+                    $chAction = $action == '' ? 'index' : $action;
+
+                    if ($chController == $currentRouteSettings['controller']
+                        && $chAction == $currentRouteSettings['action']) {
 
                         $releaseParts = [];
 
@@ -203,12 +218,12 @@ class Router
 
                                 $var = substr($part, 1);
 
-                                if (!isset($params[$var])) {
-                                    throw new RouterVarMustBeProvided($var);
-                                }
+                                $val = $params[$var] ?? null;
 
-                                $releaseParts[] = $params[$var];
-                                unset($params[$var]);
+                                if ($params[$var] ?? null) {
+                                    $releaseParts[] = $params[$var];
+                                    unset($params[$var]);
+                                }
                             }
                             else {
                                 $releaseParts[] = $part;
@@ -226,18 +241,11 @@ class Router
         }
 
         if (!$uri) {
-            $uri = '/' . implode('/', [$controller, $action]);
+            $uri = '/' . implode('/', array_filter([$controller, $action]));
         }
 
         if (count($params)) {
-
-            $get = [];
-
-            foreach ($params as $key => $value) {
-                $get[] = "$key=$value";
-            }
-
-            $uri = $uri . '?' . implode('&', $get);
+            $uri = $uri . '?' . http_build_query($params);
         }
 
         if ($selectedDomain == '*') {
@@ -287,20 +295,20 @@ class Router
             return;
         }
 
-        if (isset($routes['routes'][$uri])) {
+        $prefix = $routes['prefix'] ?? '';
 
-            $this->_controller = $routes['routes'][$uri]['controller'] ?? 'index';
-            $this->_action = $routes['routes'][$uri]['action'] ?? 'index';
-
-            foreach ($routes['routes'][$uri]['params'] ?? [] as $key => $value) {
-                $this->getRequest()->setGetParam($key, $value);
-                $this->_urlParams[$key] = $value;
-            }
-
-            return;
+        if ($uri != '/' && substr($uri, -1) == '/') {
+            $uri = $uri . '/';
         }
 
+        $match = false;
+        $withPrefix = false;
+
         foreach ($routes['routes'] as $routerUri => $settings) {
+
+            if (substr($uri, -2) == '//' && $routerUri != '/') {
+                 $routerUri = $routerUri . '/';
+            }
 
             $pattern = preg_replace('/\\\:[А-Яа-яЁёa-zA-Z0-9\_\-]+/', '([А-Яа-яЁёa-zA-Z0-9\-\_]+)', preg_quote($routerUri, '@'));
             $pattern = "@^$pattern/?$@uD";
@@ -308,30 +316,78 @@ class Router
             $matches = [];
 
             if (preg_match($pattern, $uri, $matches)) {
+                $match = true;
+                break;
+            }
+        }
 
-                array_shift($matches);
+        if (!$match) {
 
-                $this->_controller = $settings['controller'] ?? 'index';
-                $this->_action = $settings['action'] ?? 'index';
+            $withPrefix = true;
 
-                $paramIndex = 0;
+            foreach ($routes['routes'] as $routerUri => $settings) {
 
-                foreach (explode('/', $routerUri) as $routerUriPart) {
-
-                    if (substr($routerUriPart, 0, 1) == ':') {
-
-                        $this->getRequest()->setGetParam(
-                            substr($routerUriPart, 1),
-                            $matches[$paramIndex]
-                        );
-
-                        $this->_urlParams[substr($routerUriPart, 1)] = $matches[$paramIndex];
-
-                        $paramIndex++;
-                    }
+                if (substr($uri, -2) == '//' && $routerUri != '/') {
+                    $routerUri = $routerUri . '/';
                 }
 
-                $this->_injector = $settings['injector'] ?? [];
+                $patternPrefix = preg_replace('/\\\:[А-Яа-яЁёa-zA-Z0-9\_\-]+/', '([А-Яа-яЁёa-zA-Z0-9\-\_]+)', preg_quote($prefix . $routerUri, '@'));
+                $patternPrefix = "@^$patternPrefix/?$@uD";
+
+                if (preg_match($patternPrefix, $uri, $matches)) {
+                    $match = true;
+                    break;
+                }
+            }
+        }
+
+        if ($match) {
+
+            array_shift($matches);
+
+            $this->_controller = $settings['controller'] ?? 'index';
+            $this->_action = $settings['action'] ?? 'index';
+
+            $paramIndex = 0;
+
+            if ($withPrefix) {
+                $routerUri = $prefix . $routerUri;
+            }
+
+            foreach (explode('/', $routerUri) as $routerUriPart) {
+
+                if (substr($routerUriPart, 0, 1) == ':') {
+
+                    $this->getRequest()->setGetParam(
+                        substr($routerUriPart, 1),
+                        $matches[$paramIndex] ?? null
+                    );
+
+                    $this->_urlParams[substr($routerUriPart, 1)] = $matches[$paramIndex] ?? null;
+
+                    $paramIndex++;
+                }
+            }
+
+            $this->_injector = array_merge($settings['injector'] ?? [], $routes['prefixInjector'] ?? []);
+
+            return;
+        }
+
+        if (isset($routes['routes']['*']) && is_callable($routes['routes']['*'])) {
+
+            $route = $routes['routes']['*']($uri);
+
+            if (is_array($route)) {
+
+                $this->_controller = $route['controller'] ?? 'index';
+                $this->_action = $route['action'] ?? 'index';
+                $this->_urlParams = $route['params'] ?? [];
+                $this->_injector = $route['injector'] ?? [];
+
+                foreach ($this->_urlParams as $key => $value) {
+                    $this->getRequest()->setGetParam($key, $value);
+                }
 
                 return;
             }

@@ -16,7 +16,7 @@ use Light\View;
 class Form
 {
     /**
-     * @var ElementAbstract
+     * @var ElementAbstract[]
      */
     public $elements = [];
 
@@ -66,6 +66,15 @@ class Form
     public function getElements(): array
     {
         return $this->elements;
+    }
+
+    /**
+     * @param string $name
+     * @return ElementAbstract
+     */
+    public function getElement(string $name): ElementAbstract
+    {
+        return $this->elements[$name];
     }
 
     /**
@@ -277,8 +286,9 @@ class Form
      * Form constructor.
      *
      * @param array $options
+     * @param array $elements
      */
-    public function __construct(array $options = [])
+    public function __construct(array $options = [], array $elements = [])
     {
         foreach ($options as $name => $value) {
 
@@ -288,6 +298,8 @@ class Form
         }
 
         $this->init($this->data);
+
+        $this->addElements($elements);
 
         foreach ($this->getElements() as $element) {
             $element->init();
@@ -316,9 +328,13 @@ class Form
      */
     public function init($model = null)
     {
-        if ($model && $model->id) {
+        if ($model && is_subclass_of($model, Model::class)) {
+
             $this->addElement(
-                new Hidden('id', ['value' => $model->id])
+                new Hidden('id', [
+                    'value' => $model->id,
+                    'allowNull' => true
+                ])
             );
         }
     }

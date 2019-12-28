@@ -57,11 +57,9 @@
 
                     <?php else: ?>
 
-                        <a data-href="<?php echo $this->uri(['action' => 'position']); ?>"
+                        <a data-href="<?php echo \Light\Front::getInstance()->getRouter()->assemble(['action' => 'position'], \Light\Front::getInstance()->getRequest()->getParams(), false); ?>"
                            data-table-position="true"
-
                            class="btn btn-info bmd-ripple bmd-fab bmd-floating bmd-fab-sm"
-
                            data-bmd-state="info"
                            data-toggle="tooltip"
                            data-placement="bottom"

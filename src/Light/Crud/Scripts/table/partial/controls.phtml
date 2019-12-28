@@ -1,103 +1,107 @@
-<td class="text-right">
+<?php if (count($this->controls)) : ?>
 
-    <div class="btn-group">
+    <td class="text-right">
 
-        <div class="bmd-fab-speed-dial-container">
+        <div class="btn-group">
 
-            <a class="bmd-fab-speed-dialer spin btn btn-primary bmd-ripple bmd-fab bmd-floating bmd-fab-sm">
-                <span class="bmd-icon in flaticon-show8"></span>
-                <span class="bmd-icon out flaticon-close47"></span>
-            </a>
+            <div class="bmd-fab-speed-dial-container">
 
-            <ul class="bmd-fab-speed-dial-list left">
+                <a class="bmd-fab-speed-dialer spin btn btn-primary bmd-ripple bmd-fab bmd-floating bmd-fab-sm">
+                    <span class="bmd-icon in flaticon-show8"></span>
+                    <span class="bmd-icon out flaticon-close47"></span>
+                </a>
 
-                <?php foreach ($this->controls as $control) : ?>
+                <ul class="bmd-fab-speed-dial-list left">
 
-                    <?php if ($control['type'] == 'edit') : ?>
+                    <?php foreach ($this->controls as $control) : ?>
 
-                        <li>
-                            <a href="<?php echo $this->uri(['controller' => $this->controller, 'action' => 'manage'], ['id' => $this->row->id]); ?>"
-                               class="btn btn-info bmd-ripple bmd-fab bmd-fab-sm bmd-floating overflow-visible">
-                                <i class="bmd-icon material-icons"
-                                   data-bmd-state="info"
-                                   data-toggle="tooltip"
-                                   data-placement="bottom"
-                                   data-original-title="Изменить">edit</i>
-                            </a>
-                        </li>
+                        <?php if ($control['type'] == 'edit') : ?>
 
-
-                    <?php elseif ($control['type'] == 'select') : ?>
-
-                        <li>
-                            <a data-control-select="<?php echo json_encode($this->row->toArray()); ?>"
-                               class="btn btn-info bmd-ripple bmd-fab bmd-fab-sm bmd-floating overflow-visible">
-                                <i class="bmd-icon material-icons"
-                                   data-bmd-state="info"
-                                   data-toggle="tooltip"
-                                   data-placement="bottom"
-                                   data-original-title="Выбрать">select</i>
-                            </a>
-                        </li>
-
-
-
-                    <?php elseif ($control['type'] == 'copy') : ?>
-
-                        <li>
-                            <a data-copy="true"
-                               data-title="Копировать запись?"
-                               data-href="<?php echo $this->uri(['controller' => $this->controller, 'action' => 'copy'], ['id' => $this->row->id]); ?>"
-                               class="btn btn-success bmd-ripple bmd-fab bmd-fab-sm bmd-floating overflow-visible">
-                                <i class="bmd-icon material-icons"
-                                   data-bmd-state="success"
-                                   data-toggle="tooltip"
-                                   data-placement="bottom"
-                                   data-original-title="Копировать">content_copy</i>
-                            </a>
-                        </li>
-
-                    <?php elseif ($control['type'] == 'enabled') : ?>
-
-                        <li>
-
-                            <?php if ($this->row->enabled) : ?>
-
-                                <a data-enabled="true"
-                                   data-title="Приостановить работу?"
-                                   data-href="<?php echo $this->uri(['controller' => $this->controller, 'action' => 'setEnabled'], ['enabled' => 0, 'id' => $this->row->id]); ?>"
-                                   class="btn btn-warning bmd-ripple bmd-fab bmd-fab-sm bmd-floating overflow-visible">
+                            <li>
+                                <a href="<?php echo $this->uri(['controller' => $this->controller, 'action' => 'manage'], ['id' => $this->row->id]); ?>"
+                                   class="btn btn-info bmd-ripple bmd-fab bmd-fab-sm bmd-floating overflow-visible">
                                     <i class="bmd-icon material-icons"
-                                       data-bmd-state="warning"
+                                       data-bmd-state="info"
                                        data-toggle="tooltip"
                                        data-placement="bottom"
-                                       data-original-title="Выключить">visibility</i>
+                                       data-original-title="Изменить">edit</i>
                                 </a>
+                            </li>
 
-                            <?php else : ?>
 
-                                <a data-enabled="true"
-                                   data-title="Возобновить работу?"
-                                   data-href="<?php echo $this->uri(['controller' => $this->controller, 'action' => 'setEnabled'], ['enabled' => 1, 'id' => $this->row->id]); ?>"
-                                   class="btn btn-warning bmd-ripple bmd-fab bmd-fab-sm bmd-floating overflow-visible">
+                        <?php elseif ($control['type'] == 'select') : ?>
+
+                            <li>
+                                <a data-control-select="<?php echo json_encode($this->row->toArray()); ?>"
+                                   class="btn btn-info bmd-ripple bmd-fab bmd-fab-sm bmd-floating overflow-visible">
                                     <i class="bmd-icon material-icons"
-                                       data-bmd-state="warning"
+                                       data-bmd-state="info"
                                        data-toggle="tooltip"
                                        data-placement="bottom"
-                                       data-original-title="Включить">visibility_off</i>
+                                       data-original-title="Выбрать">select</i>
                                 </a>
+                            </li>
 
-                            <?php endif; ?>
 
-                        </li>
+                        <?php elseif ($control['type'] == 'copy') : ?>
 
-                    <?php endif; ?>
+                            <li>
+                                <a data-copy="true"
+                                   data-title="Копировать запись?"
+                                   data-href="<?php echo $this->uri(['controller' => $this->controller, 'action' => 'copy'], ['id' => $this->row->id]); ?>"
+                                   class="btn btn-success bmd-ripple bmd-fab bmd-fab-sm bmd-floating overflow-visible">
+                                    <i class="bmd-icon material-icons"
+                                       data-bmd-state="success"
+                                       data-toggle="tooltip"
+                                       data-placement="bottom"
+                                       data-original-title="Копировать">content_copy</i>
+                                </a>
+                            </li>
 
-                <?php endforeach; ?>
-            </ul>
+                        <?php elseif ($control['type'] == 'enabled') : ?>
+
+                            <li>
+
+                                <?php if ($this->row->enabled) : ?>
+
+                                    <a data-enabled="true"
+                                       data-title="Приостановить работу?"
+                                       data-href="<?php echo $this->uri(['controller' => $this->controller, 'action' => 'setEnabled'], ['enabled' => 0, 'id' => $this->row->id]); ?>"
+                                       class="btn btn-warning bmd-ripple bmd-fab bmd-fab-sm bmd-floating overflow-visible">
+                                        <i class="bmd-icon material-icons"
+                                           data-bmd-state="warning"
+                                           data-toggle="tooltip"
+                                           data-placement="bottom"
+                                           data-original-title="Выключить">visibility</i>
+                                    </a>
+
+                                <?php else : ?>
+
+                                    <a data-enabled="true"
+                                       data-title="Возобновить работу?"
+                                       data-href="<?php echo $this->uri(['controller' => $this->controller, 'action' => 'setEnabled'], ['enabled' => 1, 'id' => $this->row->id]); ?>"
+                                       class="btn btn-warning bmd-ripple bmd-fab bmd-fab-sm bmd-floating overflow-visible">
+                                        <i class="bmd-icon material-icons"
+                                           data-bmd-state="warning"
+                                           data-toggle="tooltip"
+                                           data-placement="bottom"
+                                           data-original-title="Включить">visibility_off</i>
+                                    </a>
+
+                                <?php endif; ?>
+
+                            </li>
+
+                        <?php endif; ?>
+
+                    <?php endforeach; ?>
+                </ul>
+
+            </div>
 
         </div>
 
-    </div>
 
-</td>
+    </td>
+
+<?php endif; ?>

@@ -375,6 +375,18 @@ final class Front
                     $this->inject($controller, $this->_router)
                 );
 
+                $controller->postRun();
+
+                foreach ($plugins as $plugin) {
+                    $plugin->postRun($this->_request, $this->_response, $this->_router);
+                }
+
+                $needLayout = true;
+
+                if (!is_null($content)) {
+                    $needLayout = false;
+                }
+
                 if (is_null($content) && $this->_view->isAutoRender()) {
                     $content = $this->_view->render();
                 }
@@ -388,7 +400,7 @@ final class Front
                     $content = json_encode($content, JSON_PRETTY_PRINT);
                     $this->_response->setHeader('Content-type', 'application/json');
                 }
-                else if ($this->_view->isLayoutEnabled()) {
+                else if ($this->_view->isLayoutEnabled() && $needLayout) {
                     $this->_view->setContent($content ?? '');
                     $content = $this->_view->renderLayout();
                 }
@@ -397,12 +409,6 @@ final class Front
             }
             else {
                 throw new Exception\ActionMethodWasNotFound($this->_router->getAction());
-            }
-
-            $controller->postRun();
-
-            foreach ($plugins as $plugin) {
-                $plugin->postRun($this->_request, $this->_response, $this->_router);
             }
 
             return $this->render($this->_response);
@@ -457,9 +463,12 @@ final class Front
 
             if (substr($line, 0, strlen('@param')) == '@param') {
 
-                $param = explode('|', str_replace('$', null, array_values(array_filter(explode(' ', $line)))[2]));
+                try {
+                    $param = explode('|', explode('$', $line)[1]);
+                }
+                catch (\Exception $e) {}
 
-                $params[$param[0]] = $param[1] ?? 'id';
+                $params[trim($param[0])] = trim($param[1] ?? 'id');
             }
         }
 
@@ -470,11 +479,11 @@ final class Front
             $var = $parameter->getName();
 
             if (isset($injector[$var])) {
-                $args[$var] = $injector[$var]($router->getUrlParams()[$var]);
+                $args[$var] = $injector[$var]($router->getUrlParams()[$var] ?? null);
             }
             else {
 
-                $value = $router->getUrlParams()[$var];
+                $value = $router->getUrlParams()[$var] ?? null;
 
                 if (!$parameter->getType()) {
                     $args[$var] = $value;
@@ -484,15 +493,15 @@ final class Front
                 switch ($parameter->getType()->getName()) {
 
                     case 'int':
-                        $args[$var] = intval($value);
+                        $args[$var] = $value ? intval($value) : null;
                         break;
 
                     case 'string':
-                        $args[$var] = strval($value);
+                        $args[$var] = $value ? strval($value) : null;
                         break;
 
                     case 'bool':
-                        $args[$var] = boolval($value);
+                        $args[$var] = $value ? boolval($value) : null;
                         break;
 
                     default:
@@ -501,12 +510,12 @@ final class Front
 
                         try {
 
-                            if (is_subclass_of($parameter->getType()->getName(), '\\Light\\Model')) {
+                            /** @var Model $model */
+                            $model = new $className();
+
+                            if (is_subclass_of($model, '\\Light\\Model')) {
 
                                 if (isset($params[$parameter->getName()])) {
-
-                                    /** @var Model $model */
-                                    $model = new $className();
 
                                     $property = $model->getMeta()->getPropertyWithName(
                                         $params[$parameter->getName()]
@@ -519,18 +528,10 @@ final class Front
                                         $value = (string)$value;
                                     }
 
-                                    if ($parameter->allowsNull()) {
-                                        /** @var Model $className */
-                                        $args[$var] = $className::fetchObject([
-                                            $params[$parameter->getName()] => $value
-                                        ]);
-                                    }
-                                    else {
-                                        /** @var Model $className */
-                                        $args[$var] = $className::fetchOne([
-                                            $params[$parameter->getName()] => $value
-                                        ]);
-                                    }
+                                    /** @var Model $className */
+                                    $args[$var] = $className::fetchOne([
+                                        $params[$parameter->getName()] => $value
+                                    ]);
                                 }
                             }
 

@@ -17,7 +17,9 @@
             <a class="btn btn-default background-image preview-image-single bmd-floating bmd-ripple"
                data-image-large="<?php echo $image; ?>"
                style="background-image: url('<?php echo $image; ?>');">
+
                 <input name="<?php echo $element->getName(); ?>[]" value="<?php echo $image; ?>" type="hidden" />
+                <div data-remove="true" class="close"><i class="fa fa-times"></i></div>
             </a>
 
         <?php endforeach; ?>
@@ -27,6 +29,7 @@
     <script type="text/html" data-template="true">
         <a class="btn btn-default background-image preview-image-single bmd-floating bmd-ripple" style="background-image: url('{{value}}');" data-image-large="{{value}}">
             <input name="<?php echo $element->getName(); ?>[]" value="{{value}}" type="hidden" />
+            <div data-remove="true" class="close"><i class="fa fa-times"></i></div>
         </a>
     </script>
 

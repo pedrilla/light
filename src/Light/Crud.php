@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace Light;
 
 use Exception;
+use Light\Model\ModelInterface;
 use MongoDB\BSON\Regex;
 
 /**
@@ -57,6 +58,20 @@ abstract class Crud extends Controller
     }
 
     /**
+     * @param mixed|null $model
+     * @return Form
+     */
+    public function getForm($model = null): Form
+    {
+        /** @var Form $formClassName */
+        $formClassName = $this->getFormClassName();
+
+        return new $formClassName([
+            'data' => $model
+        ]);
+    }
+
+    /**
      * @return string
      */
     public function getButton()
@@ -99,7 +114,7 @@ abstract class Crud extends Controller
         }
 
         $this->view->setVars([
-            'rows' => $model::fetchAll(),
+            'rows' => $model::fetchAll($this->getConditions(), $this->getSorting()),
             'header' => $this->getPositioning()
         ]);
 
@@ -427,16 +442,12 @@ abstract class Crud extends Controller
         /** @var Model $modelClassName */
         $modelClassName = $this->getModelClassName();
 
-        $formClassName = $this->getFormClassName();
-
         $model = $modelClassName::fetchObject([
             'id' => $this->getRequest()->getParam('id')
         ]);
 
         /** @var Form $form */
-        $form = new $formClassName([
-            'data' => $model
-        ]);
+        $form = $this->getForm($model);
 
         if ($this->getRequest()->isPost()) {
 
@@ -460,7 +471,10 @@ abstract class Crud extends Controller
                         $languageRelatedModel->populate($formData);
                         $languageRelatedModel->language = $language;
 
-                        if ($formData['language'] != $language->id && $model->getMeta()->hasProperty('language')) {
+                        if ($formData['language']->id != $language->id
+                            && $model->getMeta()->hasProperty('language')
+                            && $model->getMeta()->hasProperty('enabled'))
+                        {
                             $languageRelatedModel->enabled = false;
                         }
 
@@ -543,5 +557,5 @@ abstract class Crud extends Controller
         $this->view->setPath(__DIR__ . '/Crud');
     }
 
-    public function didSave() {}
+    public function didSave($model) {}
 }

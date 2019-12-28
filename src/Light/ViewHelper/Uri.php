@@ -14,13 +14,15 @@ class Uri extends ViewHelper
     /**
      * @param array $route
      * @param array $params
+     * @param bool $reset
      *
      * @return string
+     *
      * @throws \Light\Exception\DomainMustBeProvided
      * @throws \Light\Exception\RouterVarMustBeProvided
      */
-    public function call(array $route = [], array $params = [])
+    public function call(array $route = [], array $params = [], bool $reset = false)
     {
-        return Front::getInstance()->getRouter()->assemble($route, $params);
+        return Front::getInstance()->getRouter()->assemble($route, $params, $reset);
     }
 }

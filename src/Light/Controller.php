@@ -112,7 +112,8 @@ class Controller
      */
     public function getParam(string $name, $default = null, array $filters = [])
     {
-        return $this->getRequest()->getParam($name, $default, $filters);
+        return $this->getRequest()->getParam($name, $default, $filters) ??
+            $this->getRequest()->getGet($name, $default, $filters);
     }
 
     /**

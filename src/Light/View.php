@@ -133,7 +133,7 @@ class View
                 Front::getInstance()->getConfig()['light']['modules'],
                 ucfirst(Front::getInstance()->getRouter()->getModule()),
                 'View',
-                'Helpers',
+                'Helper',
                 ucfirst($name)
             ]);
         }
@@ -141,7 +141,7 @@ class View
             $helperClassName = implode('\\', [
                 Front::getInstance()->getConfig()['light']['loader']['namespace'],
                 'View',
-                'Helpers',
+                'Helper',
                 ucfirst($name)
             ]);
         }
