@@ -1,0 +1,61 @@
+<?php echo $this->asset([
+
+    'https://fonts.googleapis.com/icon?family=Material+Icons',
+    'https://use.fontawesome.com/releases/v5.6.3/css/all.css',
+
+    'admin/libraries/bmd/css/bootstrap.min.css',
+    'admin/libraries/bmd/css/flaticon.css',
+    'admin/libraries/bmd/css/prettify.css',
+    'admin/libraries/bmd/css/main.min.css',
+    'admin/libraries/bmd/css/bmd-additional.css',
+    'admin/libraries/color-picker/css/colorpicker.css',
+
+    'admin/libraries/jquery/jquery.min.js',
+    'admin/libraries/color-picker/js/colorpicker.js',
+    'admin/libraries/jquery-ui.js',
+
+    'admin/libraries/bootstrap/js/bootstrap.min.js',
+    'admin/libraries/bmd/js/moment.min.js',
+    'admin/libraries/bmd/js/bootstrap-material-datetimepicker-customized.js',
+    'admin/libraries/bmd/js/jquery.easing.min.js',
+    'admin/libraries/bmd/js/prettify.js',
+    'admin/libraries/bmd/js/main.min.js',
+
+    'admin/libraries/trumbowyg/ui/trumbowyg.min.css',
+
+    'admin/libraries/trumbowyg/trumbowyg.min.js',
+    'admin/libraries/trumbowyg/plugins/colors/trumbowyg.colors.min.js',
+    'admin/libraries/trumbowyg/plugins/table/trumbowyg.table.min.js',
+    'admin/libraries/trumbowyg/plugins/pasteimage/trumbowyg.pasteimage.min.js',
+    'admin/libraries/trumbowyg/plugins/insertaudio/trumbowyg.insertaudio.min.js',
+    'admin/libraries/trumbowyg/plugins/noembed/trumbowyg.noembed.min.js',
+    'admin/libraries/trumbowyg/plugins/fontsize/trumbowyg.fontsize.js',
+    'admin/libraries/trumbowyg/plugins/storage/trumbowyg.storage.js',
+
+    'admin/css/default.css',
+
+    'admin/js/modals.js',
+    'admin/js/loader.js',
+    'admin/js/ui-script.js',
+    'admin/js/ajax-nav.js',
+    'admin/js/ajax-load.js',
+
+    'admin/js/scripts.js',
+
+    'admin/js/form-element-image.js',
+    'admin/js/form-element-editor.js',
+    'admin/js/form-element-link.js',
+    'admin/js/category-position.js',
+
+]); ?>
+
+<script>
+    $(document).ready(() => {
+        /*** Handle jQuery plugin naming conflict between jQuery UI and Bootstrap ***/
+        try {
+            $.widget.bridge('uibutton', $.ui.button);
+            $.widget.bridge('uitooltip', $.ui.tooltip);
+        }
+        catch (e) {}
+    });
+</script>

@@ -15,8 +15,6 @@ abstract class CrudSingle extends Crud
 {
     public function index()
     {
-        $this->getView()->setAutoRender(false);
-
         /** @var Model $modelClassName */
         $modelClassName = $this->getModelClassName();
 
@@ -76,9 +74,11 @@ abstract class CrudSingle extends Crud
         );
 
 
-        return $this->view->render('form/default', [
+        $this->getView()->setVars([
             'title' => $this->getTitle(),
             'form' => $form,
         ]);
+
+        $this->getView()->setScript('form/default');
     }
 }

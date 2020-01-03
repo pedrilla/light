@@ -1,0 +1,64 @@
+<script type="text/html" id="modal-message">
+
+    <div class="modal">
+        <div class="modal-dialog bmd-modal-dialog">
+            <div class="modal-content bmd-border-primary">
+                <div class="modal-header bmd-bg-primary">
+                    <button type="button" class="close btn-link bmd-flat-btn bmd-flat-btn-light" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h4 class="modal-title bmd-text-blue-100">Сообщение</h4>
+                </div>
+                <div class="modal-body">
+                    {{message}}
+                </div>
+                <div class="modal-footer bmd-border-blue-100 panel-footer">
+                    <button type="button" class="btn btn-primary bmd-ripple btn-lg" data-dismiss="modal">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</script>
+
+<script type="text/html" id="modal-confirm">
+
+    <div class="modal">
+        <div class="modal-dialog bmd-modal-dialog">
+            <div class="modal-content bmd-border-primary">
+                <div class="modal-header bmd-bg-primary">
+                    <button type="button" class="close btn-link bmd-flat-btn bmd-flat-btn-light" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h4 class="modal-title bmd-text-blue-100">Подтвердите действие</h4>
+                </div>
+                <div class="modal-body">
+                    {{message}}
+                </div>
+                <div class="modal-footer bmd-border-blue-100 panel-footer">
+                    <button type="button" class="btn btn-default bmd-ripple btn-lg" data-dismiss="modal">Нет</button>
+                    <button type="button" class="btn btn-primary bmd-ripple btn-lg" data-modal-confirm="true">Да</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</script>
+
+
+<script type="text/html" id="modal-container">
+
+    <div class="modal">
+        <div class="modal-dialog bmd-modal-dialog">
+            <div class="modal-content bmd-border-primary">
+                <div class="modal-header bmd-bg-primary">
+                    <button type="button" class="close btn-link bmd-flat-btn bmd-flat-btn-light" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h4 class="modal-title bmd-text-blue-100">{{title}}</h4>
+                </div>
+                <div class="modal-body">
+                    {{content}}
+                </div>
+                <div class="modal-footer bmd-border-blue-100 panel-footer">
+                    <button type="button" class="btn btn-primary bmd-ripple btn-lg" data-dismiss="modal">Готово</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</script>

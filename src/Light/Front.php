@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 namespace Light;
 
+use Light\Crud\Login;
 use Light\Crud\Storage;
 use Light\Exception\ActionMethodIsReserved;
 use Light\Model\Meta\Exception\PropertyIsSetIncorrectly;
@@ -375,6 +376,12 @@ final class Front
                     $this->inject($controller, $this->_router)
                 );
 
+                $needLayout = true;
+
+                if (!is_null($content)) {
+                    $needLayout = false;
+                }
+
                 $controller->postRun();
 
                 foreach ($plugins as $plugin) {
@@ -394,7 +401,7 @@ final class Front
                     $content = json_encode($content, JSON_PRETTY_PRINT);
                     $this->_response->setHeader('Content-type', 'application/json');
                 }
-                else if ($this->_view->isLayoutEnabled()) {
+                else if ($this->_view->isLayoutEnabled() && $needLayout) {
                     $this->_view->setContent($content ?? '');
                     $content = $this->_view->renderLayout();
                 }
@@ -554,6 +561,9 @@ final class Front
 
         if (($this->getConfig()['light']['storage']['route'] ?? false) == $controller) {
             return Storage::class;
+        }
+        else if (($this->getConfig()['light']['admin']['auth']['route'] ?? false) == $controller) {
+            return Login::class;
         }
 
         if ($this->_config['light']['modules'] ?? false) {

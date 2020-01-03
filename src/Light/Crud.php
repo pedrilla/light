@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace Light;
 
 use Exception;
+use Light\Crud\AuthCrud;
 use Light\Model\ModelInterface;
 use MongoDB\BSON\Regex;
 
@@ -12,7 +13,7 @@ use MongoDB\BSON\Regex;
  * Class Crud
  * @package Light
  */
-abstract class Crud extends Controller
+abstract class Crud extends AuthCrud
 {
     /**
      * @var View
@@ -59,16 +60,20 @@ abstract class Crud extends Controller
 
     /**
      * @param mixed|null $model
-     * @return Form
+     * @return Form|null
      */
-    public function getForm($model = null): Form
+    public function getForm($model = null)
     {
         /** @var Form $formClassName */
         $formClassName = $this->getFormClassName();
 
-        return new $formClassName([
-            'data' => $model
-        ]);
+        if (class_exists($formClassName)) {
+            return new $formClassName([
+                'data' => $model
+            ]);
+        }
+
+        return null;
     }
 
     /**
@@ -101,8 +106,6 @@ abstract class Crud extends Controller
      */
     public function position()
     {
-        $this->getView()->setLayoutEnabled(false);
-
         /** @var Model $modelClassName */
         $modelClassName = $this->getModelClassName();
 
@@ -113,12 +116,12 @@ abstract class Crud extends Controller
             throw new Exception('Model doesn\'t have position property');
         }
 
-        $this->view->setVars([
+        $this->getView()->setVars([
             'rows' => $model::fetchAll($this->getConditions(), $this->getSorting()),
             'header' => $this->getPositioning()
         ]);
 
-        return $this->view->render('table/position');
+        $this->getView()->setScript('table/position');
     }
 
     public function setPosition()
@@ -376,7 +379,7 @@ abstract class Crud extends Controller
 
     public function index()
     {
-        $this->view->setVars([
+        $this->getView()->setVars([
 
             'title' => $this->getTitle(),
             'button' => $this->getButton(),
@@ -395,10 +398,11 @@ abstract class Crud extends Controller
         ]);
 
         if ($this->getRequest()->getGet('modal')) {
-            return $this->view->render('table/ajax');
+            $this->getView()->setScript('table/ajax');
         }
-
-        return $this->view->render('table/index');
+        else {
+            $this->getView()->setScript('table/index');
+        }
     }
 
     public function export()
@@ -437,8 +441,6 @@ abstract class Crud extends Controller
 
     public function manage()
     {
-        $this->getView()->setAutoRender(false);
-
         /** @var Model $modelClassName */
         $modelClassName = $this->getModelClassName();
 
@@ -502,10 +504,12 @@ abstract class Crud extends Controller
             ])
         );
 
-        return $this->view->render('form/default', [
+        $this->getView()->setVars([
             'title' => $this->getTitle(),
             'form' => $form,
         ]);
+
+        $this->getView()->setScript('form/default');
     }
 
     /**
@@ -530,6 +534,9 @@ abstract class Crud extends Controller
         return null;
     }
 
+    /**
+     * @return bool
+     */
     public function setEnabled()
     {
         /** @var Model $modelClassName */
@@ -541,20 +548,22 @@ abstract class Crud extends Controller
 
         $record->enabled = $this->getRequest()->getGet('enabled');
         $record->save();
+
+        return true;
     }
 
     public function init()
     {
         parent::init();
 
-        if ($this->getRequest()->isAjax()) {
-            $this->getView()->setLayoutEnabled(false);
-        }
+        $this->getView()->setLayoutEnabled(
+            !$this->getRequest()->isAjax()
+        );
 
-        $this->getView()->setAutoRender(false);
+        $this->getView()->setLayoutTemplate('index');
+        $this->getView()->setAutoRender(true);
 
-        $this->view = new View();
-        $this->view->setPath(__DIR__ . '/Crud');
+        $this->getView()->setPath(__DIR__ . '/Crud');
     }
 
     public function didSave($model) {}

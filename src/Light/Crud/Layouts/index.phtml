@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' />
+
+    <?php echo $this->partial('common/layout/assets'); ?>
+
+    <title><?php echo \Light\Front::getInstance()->getConfig()['light']['admin']['title'] ?? 'Light.Admin'; ?></title>
+
+</head>
+<body>
+
+<?php echo $this->partial('common/layout/modals'); ?>
+<?php echo $this->partial('common/layout/nav'); ?>
+
+<div id="main">
+    <?php echo $this->getContent(); ?>
+</div>
+
+</body>
+</html>

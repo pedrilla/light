@@ -1,0 +1,86 @@
+<nav class="navbar navbar-primary box-shadow">
+
+    <div class="container">
+
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                    data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand bmd-ripple" href="<?php echo $this->uri(['controller' => 'index'], [], true); ?>">
+                <?php echo \Light\Front::getInstance()->getConfig()['light']['admin']['title'] ?? 'Light.Admin'; ?>
+            </a>
+        </div>
+
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+
+            <ul class="nav navbar-nav">
+
+                <?php foreach (\Light\Front::getInstance()->getConfig()['light']['admin']['menu'] as $item) : ?>
+
+                    <?php if (isset($item['items'])) : ?>
+
+                        <li class="dropdown bmd-dropdown">
+
+                            <a href="#" class="dropdown-toggle bmd-ripple" data-toggle="dropdown" role="button" aria-expanded="false">
+                                <i class="fa fa-<?php echo $item['icon']; ?>"></i>
+                                <?php echo $item['title']; ?> <i class="flaticon-show8"></i>
+                            </a>
+
+                            <ul class="dropdown-menu" role="menu">
+
+                                <?php foreach ($item['items'] as $subItem) : ?>
+
+                                    <?php if (array_search('separator', $subItem) !== false) : ?>
+
+                                        <li role="separator" class="divider"></li>
+
+                                    <?php else : ?>
+
+                                        <li>
+                                            <a href="<?php echo $this->uri($subItem['url'], [], true); ?>">
+                                                <i class="fa fa-<?php echo $subItem['icon']; ?>"></i>
+                                                <?php echo $subItem['title']; ?>
+                                            </a>
+                                        </li>
+
+                                    <?php endif; ?>
+
+                                <?php endforeach; ?>
+
+                            </ul>
+
+                        </li>
+
+                    <?php else: ?>
+
+                        <li>
+                            <a href="<?php echo $this->uri($item['url'], [], true); ?>">
+                                <i class="fa fa-<?php echo $item['icon']; ?>"></i>
+                                <?php echo $item['title']; ?>
+                            </a>
+                        </li>
+
+                    <?php endif; ?>
+
+
+                <?php endforeach; ?>
+
+            </ul>
+
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a class="bmd-ripple"
+                       data-sign-out="<?php echo $this->uri(['controller' => \Light\Front::getInstance()->getConfig()['light']['admin']['auth']['route'], 'action' => 'logout'], [], true); ?>">
+                        <i class="fa fa-sign-out-alt"></i>Выйти
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+    </div>
+
+</nav>

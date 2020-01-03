@@ -1,26 +1,26 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Light\Crud;
 
 use Light\Controller;
+use Light\Crud;
 use Light\Front;
 
 /**
  * Class Storage
  * @package Light\Crud
  */
-class Storage extends Controller
+class Storage extends Crud
 {
-    /**
-     * @return false|string
-     */
-    public function getStorageContent()
+    public function init()
     {
-        return file_get_contents(
-            Front::getInstance()->getConfig()['light']['storage']['url']
-        );
+        parent::init();
+
+        if ($this->getRequest()->isAjax()) {
+            $this->getView()->setLayoutEnabled(false);
+        }
     }
 
     /**
@@ -28,8 +28,25 @@ class Storage extends Controller
      */
     public function index()
     {
-        $this->getView()->setLayoutEnabled(false);
+        $this->getView()->setScript('storage');
+    }
 
-        return $this->getStorageContent();
+    /**
+     * @return false|string
+     */
+    public function frame()
+    {
+        return file_get_contents(
+            Front::getInstance()->getConfig()['light']['storage']['url']
+        );
+    }
+
+    /**
+     * @return false|string
+     * @throws \Exception
+     */
+    public function modal()
+    {
+        return $this->getView()->render('storage');
     }
 }
