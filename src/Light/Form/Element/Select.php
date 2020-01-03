@@ -53,7 +53,7 @@ class Select extends ElementAbstract
 
             if (is_subclass_of($this->options, 'Light\\Model\\Driver\\CursorAbstract')) {
 
-                $this->optionsClassName = get_class($this->options[0]);
+                $this->optionsClassName = get_class($this->options->getModel());
             }
         }
     }
