@@ -17,7 +17,7 @@
 
                             trumbowyg.saveRange();
 
-                            $.get('/storage', {modal: true}, (storage) => {
+                            $.get('/' + window.storage.route + '/modal', {modal: true}, (storage) => {
 
                                 modal.container(storage, null, {wide: true}, 'Управление файлами');
 
