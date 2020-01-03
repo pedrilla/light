@@ -118,6 +118,7 @@ class Driver extends \Light\Model\Driver\DriverAbstract
             $limit = 1;
         } else {
             list($cond) = $this->_processQuery($cond);
+            $cond = $this->_normalizeDataTypes($cond);
         }
 
         $bulk = new \MongoDB\Driver\BulkWrite();
