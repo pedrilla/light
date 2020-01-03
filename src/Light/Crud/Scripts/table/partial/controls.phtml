@@ -20,11 +20,11 @@
                             <li>
                                 <a href="<?php echo $this->uri(['controller' => $this->controller, 'action' => 'manage'], ['id' => $this->row->id]); ?>"
                                    class="btn btn-info bmd-ripple bmd-fab bmd-fab-sm bmd-floating overflow-visible">
-                                    <i class="bmd-icon material-icons"
+                                    <i class="fa fa-edit"
                                        data-bmd-state="info"
                                        data-toggle="tooltip"
                                        data-placement="bottom"
-                                       data-original-title="Изменить">edit</i>
+                                       data-original-title="Изменить"></i>
                                 </a>
                             </li>
 
@@ -34,11 +34,11 @@
                             <li>
                                 <a data-control-select="<?php echo json_encode($this->row->toArray()); ?>"
                                    class="btn btn-info bmd-ripple bmd-fab bmd-fab-sm bmd-floating overflow-visible">
-                                    <i class="bmd-icon material-icons"
+                                    <i class="fa fa-check"
                                        data-bmd-state="info"
                                        data-toggle="tooltip"
                                        data-placement="bottom"
-                                       data-original-title="Выбрать">select</i>
+                                       data-original-title="Выбрать"></i>
                                 </a>
                             </li>
 
@@ -50,11 +50,11 @@
                                    data-title="Копировать запись?"
                                    data-href="<?php echo $this->uri(['controller' => $this->controller, 'action' => 'copy'], ['id' => $this->row->id]); ?>"
                                    class="btn btn-success bmd-ripple bmd-fab bmd-fab-sm bmd-floating overflow-visible">
-                                    <i class="bmd-icon material-icons"
+                                    <i class="fa fa-copy"
                                        data-bmd-state="success"
                                        data-toggle="tooltip"
                                        data-placement="bottom"
-                                       data-original-title="Копировать">content_copy</i>
+                                       data-original-title="Копировать"></i>
                                 </a>
                             </li>
 
@@ -68,11 +68,11 @@
                                        data-title="Приостановить работу?"
                                        data-href="<?php echo $this->uri(['controller' => $this->controller, 'action' => 'setEnabled'], ['enabled' => 0, 'id' => $this->row->id]); ?>"
                                        class="btn btn-warning bmd-ripple bmd-fab bmd-fab-sm bmd-floating overflow-visible">
-                                        <i class="bmd-icon material-icons"
+                                        <i class="fa fa-eye-slash"
                                            data-bmd-state="warning"
                                            data-toggle="tooltip"
                                            data-placement="bottom"
-                                           data-original-title="Выключить">visibility</i>
+                                           data-original-title="Выключить"></i>
                                     </a>
 
                                 <?php else : ?>
@@ -81,11 +81,11 @@
                                        data-title="Возобновить работу?"
                                        data-href="<?php echo $this->uri(['controller' => $this->controller, 'action' => 'setEnabled'], ['enabled' => 1, 'id' => $this->row->id]); ?>"
                                        class="btn btn-warning bmd-ripple bmd-fab bmd-fab-sm bmd-floating overflow-visible">
-                                        <i class="bmd-icon material-icons"
+                                        <i class="fa fa-eye"
                                            data-bmd-state="warning"
                                            data-toggle="tooltip"
                                            data-placement="bottom"
-                                           data-original-title="Включить">visibility_off</i>
+                                           data-original-title="Включить"></i>
                                     </a>
 
                                 <?php endif; ?>
