@@ -424,13 +424,14 @@ final class Front
                 $errorRouter->setModule($this->_router->getModule());
                 $errorRouter->setController('error');
                 $errorRouter->setAction('index');
+                $errorRouter->setRoutes($this->_config['router'] ?? []);
 
                 $this->setRouter($errorRouter);
                 return $this->run($localException);
             }
 
             if ($this->_config['light']['exception'] ?? false) {
-                throw $exception;
+                throw $localException;
             }
         }
     }
