@@ -1,12 +1,13 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Light;
 
 use Light\Crud\Login;
 use Light\Crud\Storage;
 use Light\Exception\ActionMethodIsReserved;
+use Light\Exception\Stop;
 use Light\Model\Meta\Exception\PropertyIsSetIncorrectly;
 use Light\Model\Meta\Property;
 
@@ -196,28 +197,6 @@ final class Front
             $this->_bootstrap = new $bootstrapClassName();
             $this->_bootstrap->setConfig($this->_config);
         }
-
-        if (isset($this->_config['light']['phpIni'])) {
-
-            foreach ($this->_config['light']['phpIni'] as $key => $val) {
-                ini_set($key, $val);
-            }
-        }
-
-        if (isset($this->_config['light']['startup'])) {
-
-            foreach ($this->_config['light']['startup'] as $key => $val) {
-
-                if (function_exists($key)) {
-
-                    if (!is_array($val)) {
-                        $val = [$val];
-                    }
-
-                    call_user_func_array($key, $val);
-                }
-            }
-        }
     }
 
     /**
@@ -240,7 +219,7 @@ final class Front
             }
         }
 
-        set_error_handler(function($number, $message, $file, $line) {
+        set_error_handler(function ($number, $message, $file, $line) {
             throw new \Exception(implode(':', [$message, $file, $line]), $number);
         });
 
@@ -261,8 +240,7 @@ final class Front
 
             if (php_sapi_name() !== 'cli') {
                 $this->_request->fillRequestFromServer();
-            }
-            else {
+            } else {
                 $this->_request->fillRequestFromCli();
             }
         }
@@ -280,7 +258,34 @@ final class Front
                 $this->_router->parse();
             }
 
+            $this->_config['light'] = array_replace_recursive(
+                $this->_config['light'],
+                $this->_router->getConfig()
+            );
+
+            foreach ($this->_config['light']['phpIni'] ?? [] as $key => $val) {
+                ini_set($key, $val);
+            }
+
+            foreach ($this->_config['light']['startup'] ?? [] as $key => $val) {
+
+                if (function_exists($key)) {
+
+                    if (!is_array($val)) {
+                        $val = [$val];
+                    }
+
+                    call_user_func_array($key, $val);
+                }
+            }
+
+            foreach ($this->_config['light']['headers'] ?? [] as $key => $val) {
+                $this->_response->setHeader($key, $val);
+            }
+
             $this->_view = new View();
+
+            $this->_view->setMinify($this->_config['light']['view']['minify'] ?? false);
 
             if ($this->_config['light']['modules'] ?? false) {
 
@@ -292,8 +297,7 @@ final class Front
                     ucfirst($this->_router->getModule()),
                     'View'
                 ]));
-            }
-            else {
+            } else {
 
                 $viewPath = realpath(implode('/', [
                     $this->_config['light']['loader']['path'],
@@ -308,8 +312,7 @@ final class Front
                 $this->_view->setLayoutEnabled(true);
                 $this->_view->setLayoutTemplate('index');
                 $this->_view->setScript($this->_router->getController() . '/' . $this->_router->getAction());
-            }
-            else {
+            } else {
                 $this->_view->setAutoRender(false);
                 $this->_view->setLayoutEnabled(false);
             }
@@ -336,8 +339,7 @@ final class Front
             if ($exception && is_subclass_of($controller, '\\Light\\ErrorController')) {
                 $controller->setException($exception);
                 $controller->setExceptionEnabled($this->_config['light']['exception'] ?? false);
-            }
-            else if ($exception) {
+            } else if ($exception) {
                 throw $exception;
             }
 
@@ -345,13 +347,26 @@ final class Front
 
             $plugins = [];
 
-            $pluginsPath = realpath($this->_config['light']['loader']['path'] . '/Plugin');
+            $pluginsPaths = [
+                '\\' . $this->_config['light']['loader']['namespace'] . '\\Plugin\\' => realpath($this->_config['light']['loader']['path'] . '/Plugin')
+            ];
 
-            if ($pluginsPath) {
+            if ($modules) {
+
+                $pluginsPaths['\\' . $this->_config['light']['loader']['namespace'] . '\\' . $modules . '\\' . ucfirst($this->_router->getModule()) . '\\Plugin\\'] =
+                    realpath(implode('/', [
+                        $this->_config['light']['loader']['path'],
+                        $modules,
+                        ucfirst($this->_router->getModule()),
+                        'Plugin'
+                    ]));
+            }
+
+            foreach (array_filter($pluginsPaths) as $pluginNamespace => $pluginsPath) {
 
                 foreach (glob($pluginsPath . '/*.php') as $pluginClass) {
 
-                    $pluginClassName = '\\' . $this->_config['light']['loader']['namespace'] . '\\Plugin\\' . str_replace('.php', null, basename($pluginClass));
+                    $pluginClassName = $pluginNamespace . str_replace('.php', null, basename($pluginClass));
 
                     if (is_subclass_of($pluginClassName, '\\Light\\Plugin')) {
                         $plugins[] = new $pluginClassName();
@@ -360,7 +375,7 @@ final class Front
             }
 
             foreach ($plugins as $plugin) {
-                $plugin->preRun($this->_request, $this->_router);
+                $plugin->preRun($this->_request, $this->_response, $this->_router);
             }
 
             $controller->init();
@@ -384,10 +399,6 @@ final class Front
 
                 $controller->postRun();
 
-                foreach ($plugins as $plugin) {
-                    $plugin->postRun($this->_request, $this->_response, $this->_router);
-                }
-
                 if (is_null($content) && $this->_view->isAutoRender()) {
                     $content = $this->_view->render();
                 }
@@ -396,25 +407,30 @@ final class Front
                     /** @var Map $content */
                     $content = $content->toArray();
                 }
-                
+
                 if (is_array($content)) {
                     $content = json_encode($content, JSON_PRETTY_PRINT);
                     $this->_response->setHeader('Content-type', 'application/json');
-                }
-                else if ($this->_view->isLayoutEnabled() && $needLayout) {
+                } else if ($this->_view->isLayoutEnabled() && $needLayout) {
                     $this->_view->setContent($content ?? '');
                     $content = $this->_view->renderLayout();
                 }
 
                 $this->_response->setBody($content);
-            }
-            else {
+
+                foreach ($plugins as $plugin) {
+                    $plugin->postRun($this->_request, $this->_response, $this->_router);
+                }
+            } else {
                 throw new Exception\ActionMethodWasNotFound($this->_router->getAction());
             }
 
             return $this->render($this->_response);
-        }
-        catch (\Exception $localException) {
+        } catch (\Exception $localException) {
+
+            if ($localException instanceof Stop) {
+                return $this->render($this->_response);
+            }
 
             if (!$exception) {
 
@@ -450,7 +466,7 @@ final class Front
 
         $docComment = str_replace('*', '', $reflection->getDocComment());
 
-        $docComment = array_filter(array_map(function($line) {
+        $docComment = array_filter(array_map(function ($line) {
 
             $line = trim($line);
 
@@ -467,8 +483,8 @@ final class Front
 
                 try {
                     $param = explode('|', explode('$', $line)[1]);
+                } catch (\Exception $e) {
                 }
-                catch (\Exception $e) {}
 
                 $params[trim($param[0])] = trim($param[1] ?? 'id');
             }
@@ -482,8 +498,7 @@ final class Front
 
             if (isset($injector[$var])) {
                 $args[$var] = $injector[$var]($router->getUrlParams()[$var] ?? null);
-            }
-            else {
+            } else {
 
                 $value = $router->getUrlParams()[$var] ?? null;
 
@@ -525,8 +540,7 @@ final class Front
 
                                     try {
                                         settype($value, $property->getType());
-                                    }
-                                    catch (\Exception $exception) {
+                                    } catch (\Exception $exception) {
                                         $value = (string)$value;
                                     }
 
@@ -535,13 +549,10 @@ final class Front
                                         $params[$parameter->getName()] => $value
                                     ]);
                                 }
-                            }
-
-                            else {
+                            } else {
                                 $args[$var] = new $className($value);
                             }
-                        }
-                        catch (\Exception $e) {
+                        } catch (\Exception $e) {
                             $args[$var] = $value;
                         }
                 }
@@ -555,15 +566,14 @@ final class Front
      * @param Router $router
      * @return string
      */
-    public function getControllerClassName(Router $router) : string
+    public function getControllerClassName(Router $router): string
     {
         $module = $router->getModule();
         $controller = $router->getController();
 
         if (($this->getConfig()['light']['storage']['route'] ?? false) == $controller) {
             return Storage::class;
-        }
-        else if (($this->getConfig()['light']['admin']['auth']['route'] ?? false) == $controller) {
+        } else if (($this->getConfig()['light']['admin']['auth']['route'] ?? false) == $controller) {
             return Login::class;
         }
 
@@ -584,8 +594,16 @@ final class Front
     }
 
     /**
+     * @throws Stop
+     */
+    public function stop()
+    {
+        throw new Stop();
+    }
+
+    /**
      * @param Response $response
-     * @return string
+     * @return mixed
      */
     public function render(Response $response)
     {
@@ -596,8 +614,7 @@ final class Front
 
         if ($phpSapiName == 'cgi' || $phpSapiName == 'fpm') {
             header('Status: ' . $statusCode);
-        }
-        else {
+        } else {
             $protocol = isset($_SERVER['SERVER_PROTOCOL']) ? $_SERVER['SERVER_PROTOCOL'] : 'HTTP/1.0';
             header($protocol . ' ' . $statusCode);
         }

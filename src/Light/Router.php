@@ -51,6 +51,11 @@ class Router
     private $_injector = [];
 
     /**
+     * @var array
+     */
+    private $_config = [];
+
+    /**
      * @return Request
      */
     public function getRequest(): Request
@@ -160,6 +165,22 @@ class Router
     public function setInjector(array $injector): void
     {
         $this->_injector = $injector;
+    }
+
+    /**
+     * @return array
+     */
+    public function getConfig(): array
+    {
+        return $this->_config;
+    }
+
+    /**
+     * @param array $config
+     */
+    public function setConfig(array $config): void
+    {
+        $this->_config = $config;
     }
 
     /**
@@ -276,6 +297,8 @@ class Router
             $domain = '*';
         }
 
+        $this->setConfig($this->_routes[$domain]['light'] ?? []);
+        
         $routes = $this->_routes[$domain] ?? [];
         $this->_module = $routes['module'] ?? '';
 

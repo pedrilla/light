@@ -95,6 +95,16 @@ class Response
     }
 
     /**
+     * @param array $headers
+     */
+    public function addHeaders(array $headers)
+    {
+        foreach ($headers as $key => $val) {
+            $this->_headers[$key] = $val;
+        }
+    }
+
+    /**
      * @param string $key
      * @param string $value
      */

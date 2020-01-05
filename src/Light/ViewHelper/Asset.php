@@ -12,6 +12,25 @@ use Light\ViewHelper;
 class Asset extends ViewHelper
 {
     /**
+     * @var array
+     */
+    public $config = [
+        'underscore' => false,
+        'prefix' => '',
+        'defer' => false,
+        'async' => false
+    ];
+
+    /**
+     * Asset constructor.
+     * Config initialization
+     */
+    public function __construct()
+    {
+        $this->config = Front::getInstance()->getConfig()['light']['asset'] ?? $this->config;
+    }
+
+    /**
      * @param $assets
      * @return string
      */
@@ -33,42 +52,46 @@ class Asset extends ViewHelper
      * @param string $uri
      * @return string
      */
-    public function js(string $uri) : string
+    public function js(string $uri): string
     {
-        return '<script src="' . $this->prepareUnderscore($uri) . '"></script>';
+        $defer = $this->config['defer'] ?? false ? 'defer' : '';
+        $async = $this->config['async'] ?? false ? 'async' : '';
+
+        $settings = implode(' ', [$defer, $async]);
+
+        return '<script src="' . $this->prepareUnderscore($uri) . '" ' . $settings . '></script>';
     }
 
     /**
      * @param string $uri
      * @return string
      */
-    public function css(string $uri) : string
+    public function css(string $uri): string
     {
-        return '<link rel="stylesheet" href="' . $this->prepareUnderscore($uri) . '" />';
+        $defer = $this->config['defer'] ?? false ? 'defer' : '';
+        $async = $this->config['async'] ?? false ? 'async' : '';
+
+        $settings = implode(' ', [$defer, $async]);
+
+        return '<link href="' . $this->prepareUnderscore($uri) . '" ' . $settings . ' rel="stylesheet" />';
     }
 
     /**
      * @param string $uri
      * @return string
      */
-    public function prepareUnderscore(string $uri) : string
+    public function prepareUnderscore(string $uri): string
     {
-        $config = Front::getInstance()->getConfig()['light']['asset'] ?? [
-            'underscore' => false,
-            'prefix' => ''
-        ];
-
-        if ($config['underscore']) {
+        if ($this->config['underscore']) {
 
             if (strpos($uri, '?') !== false) {
                 $uri = $uri . '&_=' . microtime();
-            }
-            else {
+            } else {
                 $uri = $uri . '?_=' . microtime();
             }
         }
 
-        if (!empty($config['prefix'])) {
+        if (!empty($this->config['prefix'])) {
 
             if (substr($uri, 0, 2) != '//' && substr($uri, 0, 7) != 'http://' && substr($uri, 0, 8) != 'https://') {
 
@@ -76,7 +99,7 @@ class Asset extends ViewHelper
                     $uri = '/' . $uri;
                 }
 
-                $uri = $config['prefix'] . $uri;
+                $uri = $this->config['prefix'] . $uri;
             }
         }
 

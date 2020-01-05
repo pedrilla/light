@@ -46,6 +46,11 @@ class View
     protected $_vars = [];
 
     /**
+     * @var bool
+     */
+    protected $_minify = false;
+
+    /**
      * @param string $key
      * @param $value
      */
@@ -222,6 +227,22 @@ class View
     }
 
     /**
+     * @return bool
+     */
+    public function isMinify(): bool
+    {
+        return $this->_minify;
+    }
+
+    /**
+     * @param bool $minify
+     */
+    public function setMinify(bool $minify): void
+    {
+        $this->_minify = $minify;
+    }
+
+    /**
      * @param string|null $template
      * @return false|string
      * @throws \Exception
@@ -274,6 +295,25 @@ class View
 
         if ($exception) {
             throw $exception;
+        }
+
+        if ($this->isMinify()) {
+
+            $search = array(
+                '/\>[^\S ]+/s',     // strip whitespaces after tags, except space
+                '/[^\S ]+\</s',     // strip whitespaces before tags, except space
+                '/(\s)+/s',         // shorten multiple whitespace sequences
+                '/<!--(.|\s)*?-->/' // Remove HTML comments
+            );
+
+            $replace = array(
+                '>',
+                '<',
+                '\\1',
+                ''
+            );
+
+            $content = preg_replace($search, $replace, $content);
         }
 
         return $content;
