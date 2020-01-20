@@ -219,19 +219,19 @@
 										// '<header class="dtp-header">' +
 										'<header class="dtp-header ' + this.colorClass + '">' +
 											'<div class="dtp-actual-day">Lundi</div>' +
-											'<div class="dtp-close"><a href="javascript:void(0);"><i class="material-icons">clear</i></</div>' +
+											'<div class="dtp-close"><a href="javascript:void(0);"><i class="fa fa-close"></i></</div>' +
 										'</header>' +
 										// '<div class="dtp-date hidden">' +
 										'<div class="dtp-date hidden ' + this.colorClass + '">' +
 											'<div>' +
 												'<div class="left center p10">' +
 													// '<a href="javascript:void(0);" class="dtp-select-month-before"><i class="material-icons">chevron_left</i></a>' +
-													'<a href="javascript:void(0);" class="dtp-select-month-before ' + this.colorClass + '"><i class="material-icons">chevron_left</i></a>' +
+													'<a href="javascript:void(0);" class="dtp-select-month-before ' + this.colorClass + '"><i class="fa fa-chevron-left"></i></a>' +
 												'</div>' +
 												'<div class="dtp-actual-month p80">MAR</div>' +
 												'<div class="right center p10">' +
 													// '<a href="javascript:void(0);" class="dtp-select-month-after"><i class="material-icons">chevron_right</i></a>' +
-													'<a href="javascript:void(0);" class="dtp-select-month-after ' + this.colorClass + '"><i class="material-icons">chevron_right</i></a>' +
+													'<a href="javascript:void(0);" class="dtp-select-month-after ' + this.colorClass + '"><i class="fa fa-chevron-right"></i></a>' +
 												'</div>' +
 												'<div class="clearfix"></div>' +
 											'</div>' +
@@ -239,12 +239,12 @@
 											'<div>' +
 												'<div class="left center p10">' +
 													// '<a href="javascript:void(0);" class="dtp-select-year-before"><i class="material-icons">chevron_left</i></a>' +
-													'<a href="javascript:void(0);" class="dtp-select-year-before ' + this.colorClass + '"><i class="material-icons">chevron_left</i></a>' +
+													'<a href="javascript:void(0);" class="dtp-select-year-before ' + this.colorClass + '"><i class="fa fa-chevron-left"></i></a>' +
 												'</div>' +
 												'<div class="dtp-actual-year p80">2014</div>' +
 												'<div class="right center p10">' +
 													// '<a href="javascript:void(0);" class="dtp-select-year-after"><i class="material-icons">chevron_right</i></a>' +
-													'<a href="javascript:void(0);" class="dtp-select-year-after ' + this.colorClass + '"><i class="material-icons">chevron_right</i></a>' +
+													'<a href="javascript:void(0);" class="dtp-select-year-after ' + this.colorClass + '"><i class="fa fa-chevron-right"></i></a>' +
 												'</div>' +
 												'<div class="clearfix"></div>' +
 											'</div>' +

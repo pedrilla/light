@@ -184,12 +184,14 @@ class Map implements Map\MapInterface, \Iterator
      *
      * @return array
      */
-    public static function executeArray($data, array $context = [])
+    public static function executeArray($data, array $context = [], array $userData = [])
     {
         $map = new self();
 
         $map->setData($data);
         $map->setContext('common');
+        $map->setUserData($userData);
+
         $map->_commonData = $context;
 
         return $map->toArray();
@@ -215,10 +217,10 @@ class Map implements Map\MapInterface, \Iterator
             }
 
             if (is_array($arguments[1])) {
-                return self::executeArray($arguments[0], $arguments[1]);
+                return self::executeArray($arguments[0], $arguments[1], $arguments[2] ?? []);
             }
 
-            return self::executeMap($arguments[0], $arguments[1]);
+            return self::executeMap($arguments[0], $arguments[1] ?? [], $arguments[2] ?? []);
         }
 
         throw new Exception([], 'Method ' . $name . ' not implemented', 500);
