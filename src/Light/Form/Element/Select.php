@@ -148,7 +148,7 @@ class Select extends ElementAbstract
                     }
                 }
 
-                if ($option['id'] ?? -1 == $value->id) {
+                if (($option['id'] ?? -1) == ($value->id ?? -2)) {
                     return $option['id'];
                 }
             }
