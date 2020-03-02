@@ -36,8 +36,10 @@ class Storage extends Crud
      */
     public function frame()
     {
+        $storageConfig = Front::getInstance()->getConfig()['light']['storage'];
+        
         return file_get_contents(
-            Front::getInstance()->getConfig()['light']['storage']['url']
+            $storageConfig['url'] . '?key=' . $storageConfig['key']
         );
     }
 
