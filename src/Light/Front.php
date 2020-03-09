@@ -441,7 +441,8 @@ final class Front
                 $errorRouter->setController('error');
                 $errorRouter->setAction('index');
                 $errorRouter->setRoutes($this->_config['router'] ?? []);
-
+                $errorRouter->setConfig($this->_router->getConfig());
+                
                 $this->setRouter($errorRouter);
                 return $this->run($localException);
             }
