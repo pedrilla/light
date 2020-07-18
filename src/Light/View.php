@@ -244,7 +244,8 @@ class View
 
     /**
      * @param string|null $template
-     * @return false|string
+     * @param array $vars
+     * @return string
      * @throws \Exception
      */
     public function render(string $template = null, array $vars = [])
@@ -259,7 +260,40 @@ class View
             return $view->render($template);
         }
 
-        return $this->_render($this->_path . '/Scripts/' . ($template ?? $this->_script) . '.phtml');
+        try {
+            $content = $this->_render($this->_path . '/Scripts/' . ($template ?? $this->_script) . '.phtml');
+        }
+        catch (\Exception $e) {
+
+            $config = Front::getInstance()->getConfig();
+
+            if ($config['light']['modules'] ?? false) {
+
+                $modules = implode('/', array_slice(explode('\\', $config['light']['modules']), 2));
+
+                $viewPath = realpath(implode('/', [
+                    $config['light']['loader']['path'],
+                    $modules,
+                    ucfirst(Front::getInstance()->getRouter()->getModule()),
+                    'View'
+                ]));
+            } else {
+
+                $viewPath = realpath(implode('/', [
+                    $config['light']['loader']['path'],
+                    'View'
+                ]));
+            }
+
+            try {
+                $content = $this->_render($viewPath . '/' . ($template ?? $this->_script) . '.phtml');
+            }
+            catch (\Exception $_e) {
+                throw $e;
+            }
+        }
+
+        return $content;
     }
 
     /**
