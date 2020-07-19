@@ -515,3 +515,7 @@ form.bmd-form .panel-body > hr:first-of-type {
     border-style: dashed;
     max-height: 52px;
 }
+
+.pagination {
+    margin: 0px 0;
+}
