@@ -1,0 +1,41 @@
+<div class="panel-footer">
+
+    <nav aria-label="Page navigation" class="text-right">
+
+        <ul class="pagination">
+
+            <?php if ($this->prev) : ?>
+
+                <li>
+                    <a href="?page=<?php echo $this->prev; ?>" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+
+            <?php endif; ?>
+
+            <?php foreach ($this->pages as $page) : ?>
+
+                <li <?php if ($page == $this->paginator->getPage()) : ?>class="active"<?php endif; ?>>
+                    <a href="?page=<?php echo $page; ?>">
+                        <?php echo $page; ?>
+                    </a>
+                </li>
+
+            <?php endforeach; ?>
+
+            <?php if ($this->next) : ?>
+
+                <li>
+                    <a href="?page=<?php echo $this->next; ?>" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+
+            <?php endif; ?>
+
+        </ul>
+
+    </nav>
+
+</div>
