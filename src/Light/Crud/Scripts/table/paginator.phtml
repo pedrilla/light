@@ -1,46 +1,50 @@
 <?php if ($this->pageCount && $this->pageCount > 1): ?>
 
-    <div class="row">
+    <div class="panel-footer">
 
-        <div class="col-xs-12 text-right">
+        <div class="row">
 
-            <ul class="pagination pagination-sm bmd-state-primary" data-paginator="true">
+            <div class="col-xs-12 text-right">
 
-                <?php if (isset($this->previous)): ?>
+                <ul class="pagination pagination-sm bmd-state-primary" data-paginator="true">
 
-                    <li><a data-page="<?php echo $this->previous; ?>">&laquo;</a></li>
+                    <?php if (isset($this->previous)): ?>
 
-                <?php else: ?>
-
-                    <li class="disabled"><a>&laquo;</a></li>
-
-                <?php endif; ?>
-
-                <?php foreach ($this->pagesInRange as $page) : ?>
-
-                    <?php if ($page == $this->current): ?>
-
-                        <li class="active"><a><?php echo $page; ?></a></li>
+                        <li><a data-page="<?php echo $this->previous; ?>">&laquo;</a></li>
 
                     <?php else: ?>
 
-                        <li><a data-page="<?php echo $page; ?>"><?php echo $page; ?></a></li>
+                        <li class="disabled"><a>&laquo;</a></li>
 
                     <?php endif; ?>
 
-                <?php endforeach; ?>
+                    <?php foreach ($this->pagesInRange as $page) : ?>
 
-                <?php if (isset($this->next)): ?>
+                        <?php if ($page == $this->current): ?>
 
-                    <li><a data-page="<?php echo $this->next; ?>">&raquo;</a></li>
+                            <li class="active"><a><?php echo $page; ?></a></li>
 
-                <?php else: ?>
+                        <?php else: ?>
 
-                    <li class="disabled"><a>&raquo;</a></li>
+                            <li><a data-page="<?php echo $page; ?>"><?php echo $page; ?></a></li>
 
-                <?php endif; ?>
+                        <?php endif; ?>
 
-            </ul>
+                    <?php endforeach; ?>
+
+                    <?php if (isset($this->next)): ?>
+
+                        <li><a data-page="<?php echo $this->next; ?>">&raquo;</a></li>
+
+                    <?php else: ?>
+
+                        <li class="disabled"><a>&raquo;</a></li>
+
+                    <?php endif; ?>
+
+                </ul>
+
+            </div>
 
         </div>
 
