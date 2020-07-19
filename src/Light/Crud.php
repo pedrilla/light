@@ -238,7 +238,7 @@ abstract class Crud extends AuthCrud
      */
     public function getItemsPerPage()
     {
-        return 999;
+        return 10;
     }
 
     /**
@@ -361,20 +361,28 @@ abstract class Crud extends AuthCrud
     }
 
     /**
-     * @return Zend_Paginator
-     * @throws Zend_Paginator_Exception
+     * @return Paginator
      */
     public function getPaginator()
     {
         /** @var Model $modelClassName */
         $modelClassName = $this->getModelClassName();
 
-        return $modelClassName::fetchAll(
+        $paginator = new Paginator(
+            new $modelClassName(),
             $this->getConditions(),
-            $this->getSorting(),
-            $this->getItemsPerPage(),
-            ($this->getRequest()->getGet('page', 1) - 1) * $this->getItemsPerPage()
+            $this->getSorting()
         );
+
+        $paginator->setPage(
+            intval($this->getRequest()->getGet('page', 1))
+        );
+
+        $paginator->setItemsPerPage(
+            $this->getItemsPerPage()
+        );
+
+        return $paginator;
     }
 
     public function index()
@@ -394,7 +402,6 @@ abstract class Crud extends AuthCrud
             'controls' => $this->getControls(),
             'paginator' => $this->getPaginator(),
             'controller' => $this->getRouter()->getController(),
-            'page' => $this->getRequest()->getGet('page', 1)
         ]);
 
         if ($this->getRequest()->getGet('modal')) {
