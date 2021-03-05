@@ -121,7 +121,10 @@ class Controller
      */
     public function getParams()
     {
-        return $this->getRequest()->getParams();
+        return array_merge(
+            $this->getRequest()->getParams(),
+            $this->getRequest()->getGetAll()
+        );
     }
 
     public function init()
