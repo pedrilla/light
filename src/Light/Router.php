@@ -370,7 +370,8 @@ class Router
 
             $this->_controller = $settings['controller'] ?? 'index';
             $this->_action = $settings['action'] ?? 'index';
-
+            $this->_urlParams = $settings['params'] ?? [];
+            
             $paramIndex = 0;
 
             if ($withPrefix) {
@@ -393,6 +394,10 @@ class Router
             }
 
             $this->_injector = array_merge($settings['injector'] ?? [], $routes['prefixInjector'] ?? []);
+            
+            foreach ($this->_urlParams as $key => $value) {
+                $this->getRequest()->setGetParam($key, $value);
+            }
 
             return;
         }
