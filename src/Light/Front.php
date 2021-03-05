@@ -287,6 +287,8 @@ final class Front
 
             $this->_view->setMinify($this->_config['light']['view']['minify'] ?? false);
 
+            $modules = null;
+            
             if ($this->_config['light']['modules'] ?? false) {
 
                 $modules = implode('/', array_slice(explode('\\', $this->_config['light']['modules']), 2));
