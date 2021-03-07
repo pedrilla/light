@@ -519,3 +519,58 @@ form.bmd-form .panel-body > hr:first-of-type {
 .pagination {
     margin: 0px 0;
 }
+
+.no-animation, .no-animation * {
+    transition: none;
+}
+
+.select-multi .sortable-item {
+    max-height: 70px;
+    min-height: 70px;
+    cursor: pointer;
+}
+
+.select-multi .sortable-item .panel {
+    max-height: 50px;
+    overflow: visible;
+}
+
+.select-multi .sortable-item .panel-body {
+    padding: 10px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    height: 48px;
+    overflow: hidden;
+}
+
+.bg-image {
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+}
+
+.bg-image.bg-image-contain {
+    background-size: contain;
+}
+
+.select-multi .panel .panel-image {
+    height: 50px;
+    width: 50px;
+    float: left;
+}
+
+.select-multi-iframe {
+    border: none;
+    width: 100%;
+    min-height: 60vh;
+}
+
+.select-multi .select-multi-container {
+    margin-top: 15px;
+}
+
+.select-multi .panel a {
+    position: absolute;
+    right: -10px;
+    top: -10px;
+}
