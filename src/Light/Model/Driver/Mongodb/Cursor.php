@@ -216,6 +216,7 @@ class Cursor extends \Light\Model\Driver\CursorAbstract
      */
     private function _executeQuery(\MongoDB\Driver\Query $query) : \MongoDB\Driver\Cursor
     {
+        /** @var \MongoDB\Driver\Manager $manager */
         $manager = $this->getModel()->getManager();
 
         return $manager->executeQuery(

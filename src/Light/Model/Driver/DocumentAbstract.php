@@ -7,6 +7,7 @@ namespace Light\Model\Driver;
 use Light\Model;
 use Light\Model\Driver\Exception\PropertyHasDifferentType;
 use Light\Registry;
+use MongoDB\BSON\ObjectId;
 
 /**
  * Interface DocumentInterface
@@ -186,8 +187,68 @@ abstract class DocumentAbstract implements \ArrayAccess
             return $value;
         }
 
-        if (class_exists($property->getType(), true) && is_subclass_of($property->getType(), '\\Light\\Model')) {
+        if (
+            substr($property->getType(), -2) === '[]'
+            && class_exists(substr($property->getType(), 0, -2), true)
+            && is_subclass_of(substr($property->getType(), 0, -2), '\\Light\\Model')
+        ) {
+            if (is_array($value)) {
 
+                /** @var Model $modelClassName */
+                $modelClassName = substr($property->getType(), 0, -2);
+
+                /** @var Model $modelClassObject */
+                $modelClassObject = new $modelClassName;
+
+                switch ($modelClassObject->getMeta()->getPrimary()) {
+
+                    case 'id':
+                        $objects = $modelClassName::fetchAll(['_id' => ['$in' => array_map(function ($id) {
+
+                            /** @var Model $id */
+                            return new ObjectId(
+                                is_object($id) ?
+                                    $id->{$id->getMeta()->getPrimary()} :
+                                    $id
+                            );
+
+                        }, $value)]]);
+                        break;
+
+                    default:
+                        $objects = $modelClassName::fetchAll([
+                            $modelClassObject->getMeta()->getPrimary() => ['$in' => $value]
+                        ]);
+                }
+
+                if ($toArray) {
+                    return $objects->toArray();
+                }
+
+                return $objects;
+            }
+
+            if (!$isSet) {
+
+                if ($toArray) {
+                    return $value->toArray();
+                }
+
+                return $value;
+            }
+
+            $records = [];
+            foreach ($value as $record) {
+                $records[] = $record->{$record->getMeta()->getPrimary()};
+            }
+
+            return $records;
+        }
+
+        if (
+            class_exists($property->getType(), true)
+            && is_subclass_of($property->getType(), '\\Light\\Model')
+        ) {
             if (is_string($value)) {
 
                 /** @var Model $modelClassName */

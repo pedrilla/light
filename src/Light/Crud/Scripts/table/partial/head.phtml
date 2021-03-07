@@ -9,7 +9,7 @@
 
         <?php if ($header['type'] == 'bool') : ?>
 
-            <th class="<?php if (empty($header['static']) && $index > 0) : ?>hidden-xs <?php endif; ?> text-center" style="width: 111px;">
+        <th class="<?php if (empty($header['static']) && $index > 0) : ?>hidden-xs <?php endif; ?> text-center" style="width: 111px;">
 
                 <?php echo str_replace(' ', '&nbsp;', $header['title']); ?>
 
@@ -18,7 +18,7 @@
 
         <?php elseif ($header['type'] == 'image' || $header['type'] == 'images') : ?>
 
-            <th class="<?php if (empty($header['static']) && $index > 0) : ?>hidden-xs <?php endif; ?>">
+        <th class="<?php if (empty($header['static']) && $index > 0) : ?>hidden-xs <?php endif; ?>">
 
                 <span><?php echo str_replace(' ', '&nbsp;', $header['title']); ?></span>
 
@@ -26,7 +26,7 @@
 
         <?php else : ?>
 
-            <th class="<?php if (empty($header['static']) && $index > 0) : ?>hidden-xs <?php endif; ?>">
+        <th class="<?php if (empty($header['static']) && $index > 0) : ?>hidden-xs <?php endif; ?>">
 
                 <?php echo str_replace(' ', '&nbsp;', $header['title']); ?>
 
@@ -38,9 +38,7 @@
 
     <?php endforeach; ?>
 
-    <?php if (count($this->controls)) : ?>
-        <th class="text-right" style="width: 10px;"></th>
-    <?php endif; ?>
+  <th class="text-right" style="width: 10px;"></th>
 
 </tr>
 

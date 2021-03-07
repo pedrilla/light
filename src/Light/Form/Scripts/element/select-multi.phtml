@@ -1,0 +1,72 @@
+<?php /** @var \Light\Form\Element\SelectMulti $element */ ?>
+<?php $element = $this->element; ?>
+
+<div class="select-multi"
+  data-select-multi="<?php echo $element->getName(); ?>"
+  data-select-source="<?php echo $element->getSource(); ?>"
+  data-select-fields="<?php echo base64_encode(json_encode($element->getFields())); ?>">
+
+  <a class="btn btn-primary bmd-ripple bmd-floating footer" data-select="true">
+    Выбрать запись
+  </a>
+
+  <div class="row no-animation select-multi-container" data-select-multi-container="<?php echo $element->getName(); ?>">
+
+    <?php foreach ($element->getValue() ?? [] as $item) : ?>
+
+      <?php if (is_string($item)) {
+        $item = $element->getSource()::fetchOne(['id' => $item]);
+      } ?>
+    
+      <div class="col-xs-6 col-md-4 col-lg-3 sortable-item" data-select-multi-item="true">
+        <div class="panel panel-default bmd-ripple bmd-floating">
+
+          <a class="btn btn-sm btn-danger bmd-ripple bmd-fab bmd-floating bmd-fab-sm" data-select-multi-remove="true">
+            <span class="bmd-icon flaticon-close47"></span>
+          </a>
+
+          <input type="hidden" name="<?php echo $element->getName(); ?>[]" value="<?php echo $item->id; ?>" />
+
+          <?php if ($element->getFields()['image'] ?? false) : ?>
+            <div class="panel-image bg-image" style="background-image: url('<?php echo $item->{$element->getFields()['image']}; ?>');"></div>
+          <?php endif; ?>
+
+          <div class="panel-body">
+            <?php echo $item->{$element->getFields()['title']}; ?>
+          </div>
+
+        </div>
+      </div>
+
+    <?php endforeach; ?>
+
+  </div>
+
+  <script type="text/html">
+    <div class="col-xs-6 col-md-4 col-lg-3 sortable-item" data-select-multi-item="true">
+        <div class="panel panel-default bmd-ripple bmd-floating">
+
+          <a class="btn btn-sm btn-danger bmd-ripple bmd-fab bmd-floating bmd-fab-sm" data-select-multi-remove="true">
+            <span class="bmd-icon flaticon-close47"></span>
+          </a>
+
+        <input type="hidden" name="<?php echo $element->getName(); ?>[]" value="{{id}}" />
+
+          <?php if ($element->getFields()['image'] ?? false) : ?>
+            <div class="panel-image bg-image" style="background-image: url('{{image}}');"></div>
+          <?php endif; ?>
+
+        <div class="panel-body">
+          {{title}}
+        </div>
+
+      </div>
+    </div>
+
+  </script>
+
+  <script>
+    $('[data-select-multi-container="<?php echo $element->getName(); ?>"]').sortable();
+  </script>
+
+</div>

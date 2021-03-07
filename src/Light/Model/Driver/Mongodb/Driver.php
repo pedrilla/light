@@ -301,10 +301,18 @@ class Driver extends \Light\Model\Driver\DriverAbstract
         foreach ($data as $name => $value) {
 
             if ($value instanceof Model) {
-
                 $data[$name] = $value->{$value->getMeta()->getPrimary()};
             }
 
+            if ($value instanceof Cursor) {
+
+                $ids = [];
+                foreach ($value as $record) {
+                    $ids[] = $record->{$value->getModel()->getMeta()->getPrimary()};
+                }
+
+                $data[$name] = $ids;
+            }
         }
 
         return $data;

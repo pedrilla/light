@@ -124,6 +124,10 @@ abstract class Crud extends AuthCrud
         $this->getView()->setScript('table/position');
     }
 
+    /**
+     * @return array
+     * @throws Exception
+     */
     public function setPosition()
     {
         $this->getView()->setLayoutEnabled(false);
@@ -151,7 +155,9 @@ abstract class Crud extends AuthCrud
         return [];
     }
 
-
+    /**
+     * @throws Exception
+     */
     public function copy()
     {
         $this->getView()->setLayoutEnabled(false);
@@ -191,10 +197,6 @@ abstract class Crud extends AuthCrud
         $newRecord->populate($data);
         $newRecord->save();
     }
-
-
-
-
 
     /**
      * @return array
@@ -385,6 +387,9 @@ abstract class Crud extends AuthCrud
         return $paginator;
     }
 
+    /**
+     *
+     */
     public function index()
     {
         $this->getView()->setVars([
@@ -404,14 +409,32 @@ abstract class Crud extends AuthCrud
             'controller' => $this->getRouter()->getController(),
         ]);
 
-        if ($this->getRequest()->getGet('modal')) {
-            $this->getView()->setScript('table/ajax');
-        }
-        else {
-            $this->getView()->setScript('table/index');
-        }
+        $this->getView()->setScript('table/index');
     }
 
+    /**
+     *
+     */
+    public function select()
+    {
+        $this->getView()->setVars([
+
+            'title' => $this->getTitle(),
+            'language' => $this->getRequest()->getGet('filter')['language'] ?? false,
+            'filter' => $this->getFilterWithValues(),
+            'header' => $this->getHeader(),
+            'isSelectControl' => true,
+            'paginator' => $this->getPaginator(),
+            'elementName' => $this->getParam('elementName'),
+            'controller' => $this->getRouter()->getController(),
+        ]);
+
+        $this->getView()->setScript('table/modal');
+    }
+
+    /**
+     * @return string
+     */
     public function export()
     {
         $this->getView()->setLayoutEnabled(false);
@@ -446,6 +469,11 @@ abstract class Crud extends AuthCrud
         return implode(";\n", $response) . ';';
     }
 
+    /**
+     * @throws Exception\DomainMustBeProvided
+     * @throws Exception\RouterVarMustBeProvided
+     * @throws Exception\ValidatorClassWasNotFound
+     */
     public function manage()
     {
         /** @var Model $modelClassName */
@@ -559,6 +587,9 @@ abstract class Crud extends AuthCrud
         return true;
     }
 
+    /**
+     *
+     */
     public function init()
     {
         parent::init();
@@ -573,5 +604,8 @@ abstract class Crud extends AuthCrud
         $this->getView()->setPath(__DIR__ . '/Crud');
     }
 
+    /**
+     * @param Model $model
+     */
     public function didSave($model) {}
 }
