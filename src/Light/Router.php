@@ -208,7 +208,7 @@ class Router
 
         foreach ($this->_routes as $domain => $router) {
 
-            if ($router['module'] ?? null == $module) {
+            if (($router['module'] ?? null) == $module) {
 
                 $selectedDomain = $domain;
 
