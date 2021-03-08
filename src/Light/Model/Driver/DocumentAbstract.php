@@ -231,7 +231,7 @@ abstract class DocumentAbstract implements \ArrayAccess
             if (!$isSet) {
 
                 if ($toArray) {
-                    return $value->toArray();
+                    return $value ? $value->toArray() : [];
                 }
 
                 return $value;

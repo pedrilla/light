@@ -94,8 +94,6 @@ class Map implements Map\MapInterface, \Iterator
     {
         $contextMap = $this->_getContextMap($this->getContext());
 
-        // var_dump($this->getContext()); die();
-
         $transformedDataRow = [];
 
         foreach ($contextMap as $name => $value) {
