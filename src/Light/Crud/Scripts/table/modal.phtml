@@ -16,6 +16,11 @@ echo $this->partial('header'); ?>
 
             <input type="hidden" value="<?php echo $this->page; ?>" name="page" />
 
+            <?php if ($this->isSelectControl) : ?>
+                <input type="hidden" name="fields" value="<?php echo $this->fieldsRaw; ?>" />
+            <?php endif; ?>
+
+
             <div class="panel-body">
 
                 <?php echo $this->partial('table/partial/filter'); ?>
@@ -24,7 +29,10 @@ echo $this->partial('header'); ?>
 
                     <table class="table table-striped table-hover">
 
-                        <?php echo $this->partial('table/partial/head', ['controls' => $this->controls, 'header' => $this->header]); ?>
+                        <?php echo $this->partial('table/partial/head', [
+                            'controls' => $this->controls,
+                            'header' => $this->header
+                        ]); ?>
 
                         <tbody>
 
@@ -32,8 +40,19 @@ echo $this->partial('header'); ?>
                         <?php foreach ($this->paginator->getItems() as $row) : ?>
 
                             <tr>
-                                <?php echo $this->partial('table/partial/row', ['header' => $this->header, 'row' => $row]); ?>
-                                <?php echo $this->partial('table/partial/controls', ['controls' => $this->controls, 'controller' => $this->controller, 'row' => $row, 'elementName' => $this->elementName]); ?>
+                                <?php echo $this->partial('table/partial/row', [
+                                    'header' => $this->header,
+                                    'row' => $row
+                                ]); ?>
+
+                                <?php echo $this->partial('table/partial/controls', [
+                                    'fields' => $this->fields,
+                                    'controls' => $this->controls,
+                                    'controller' => $this->controller,
+                                    'row' => $row,
+                                    'elementName' => $this->elementName,
+                                    'isSelectControl' => $this->isSelectControl
+                                ]); ?>
                             </tr>
 
                         <?php endforeach; ?>
@@ -44,7 +63,9 @@ echo $this->partial('header'); ?>
 
                 <?php else: ?>
 
-                    <?php echo $this->partial('table/partial/empty', ['header' => $this->header]); ?>
+                    <?php echo $this->partial('table/partial/empty', [
+                        'header' => $this->header
+                    ]); ?>
 
                 <?php endif; ?>
 

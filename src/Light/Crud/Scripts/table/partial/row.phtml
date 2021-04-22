@@ -64,7 +64,7 @@
 
                 <div class="background-image table-preview-image bmd-floating bmd-ripple"
                      data-image-large="<?php echo $this->row[$key][0] ?? ''; ?>"
-                     style="background-image: url(<?php echo $this->row[$key][0] ?? ''; ?>); "></div>
+                     style="background-image: url('<?php echo $this->row[$key][0] ?? ''; ?>'); "></div>
 
             <?php endif; ?>
 
@@ -76,7 +76,7 @@
 
             <div class="background-image table-preview-image bmd-floating bmd-ripple"
                  data-image-large="<?php echo $this->row[$key] ?? ''; ?>"
-                 style="background-image: url(<?php echo $this->row[$key] ?? ''; ?>); "></div>
+                 style="background-image: url('<?php echo $this->row[$key] ?? ''; ?>'); "></div>
         </td>
 
     <?php elseif ($col['type'] == 'custom') : ?>

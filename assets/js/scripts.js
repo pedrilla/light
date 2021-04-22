@@ -1,19 +1,17 @@
-$(document).ready(function(){
+$(document).ready(function () {
 
     /// SIGN OUT
 
-    $(document).on('click', '[data-sign-out]', function(){
+    $(document).on('click', '[data-sign-out]', function () {
         modal.confirm('Вы уверены что хотите выйти?', () => {
             location.href = $(this).data('sign-out');
         });
     });
 
 
-
-
     /// TABLE
 
-    $(document).on('click', '[data-enabled]', function(){
+    $(document).on('click', '[data-enabled]', function () {
         modal.confirm($(this).data('title'), () => {
             $.get($(this).data('href'), () => {
                 NAV.reload();
@@ -21,20 +19,13 @@ $(document).ready(function(){
         });
     });
 
-    $(document).on('click', '[data-copy]', function(){
+    $(document).on('click', '[data-copy]', function () {
         modal.confirm($(this).data('title'), () => {
             $.get($(this).data('href'), () => {
                 NAV.reload();
             });
         });
     });
-
-
-
-
-
-
-
 
 
     $(document).on('submit', '[data-form-table]', function () {
@@ -53,7 +44,6 @@ $(document).ready(function(){
     });
 
 
-
     $(document).on('click', '[data-paginator] [data-page]', function () {
         $(this).closest('form').find('[name="page"]').val($(this).data('page'));
         $(this).closest('form').submit();
@@ -66,11 +56,6 @@ $(document).ready(function(){
     });
 
 
-
-
-
-
-
     /// POSITION
 
     $(document).on('click', '[data-table-position]', function () {
@@ -78,13 +63,15 @@ $(document).ready(function(){
         loader.show();
 
         $.get($(this).data('href'), (content) => {
-            modal.container(content, () => {NAV.reload();}, {wide: true}, 'Управление позицией');
+            modal.container(content, () => {
+                NAV.reload();
+            }, {wide: true}, 'Управление позицией');
             loader.hide();
             applySortable();
         });
     });
 
-    $(document).on('click', '[data-position-container] [data-control-select] [data-option]', function(){
+    $(document).on('click', '[data-position-container] [data-control-select] [data-option]', function () {
 
         loader.show();
 
@@ -105,16 +92,9 @@ $(document).ready(function(){
     }
 
 
-
-
-
-
-
-
-
     /// FORMS
 
-    $(document).on('submit', '[data-from-manage]', function(){
+    $(document).on('submit', '[data-from-manage]', function () {
         $.post(location.pathname, $(this).serialize(), (r) => {
             if (r.substr(0, 3) == 'ok:') {
                 NAV.nav(r.substr(3));
@@ -126,26 +106,9 @@ $(document).ready(function(){
     });
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     let activeSelectControl = null;
 
-    $(document).on('click', '[data-form-table-modal] [data-control-select-controller]', function(){
+    $(document).on('click', '[data-form-table-modal] [data-control-select-controller]', function () {
 
         if (!activeSelectControl) {
             modal.hide();
@@ -170,12 +133,10 @@ $(document).ready(function(){
 
                     if (item.images && item.images.length) {
                         template = template.split('{{image}}').join(item.images[0]);
-                    }
-                    else {
+                    } else {
                         template = template.split('{{image}}').join(item.image);
                     }
-                }
-                else {
+                } else {
                     template = template.split('{{' + variable + '}}').join(item[variable]);
                     console.log(activeSelectControl);
                 }
@@ -183,17 +144,16 @@ $(document).ready(function(){
 
             if (activeSelectControl.data('multiple')) {
                 container.find('[data-select-controller-list]').append(template);
-            }
-            else {
+            } else {
                 container.find('[data-select-controller-list]').html(template);
             }
+        } catch (e) {
         }
-        catch (e) {}
 
         modal.hide();
     });
 
-    $(document).on('click', '[data-select-controller]', function(){
+    $(document).on('click', '[data-select-controller]', function () {
         activeSelectControl = $(this);
         loader.show();
         $.get($(this).data('select-controller'), {modal: true}, (content) => {
@@ -205,7 +165,7 @@ $(document).ready(function(){
     });
 
 
-    $(document).on('click', '[data-select-controller-container] [data-select-controller-delete]', function(){
+    $(document).on('click', '[data-select-controller-container] [data-select-controller-delete]', function () {
 
         modal.confirm('Удалить запись?', () => {
             $(this).closest('[data-select-controller-item]').remove();
@@ -215,7 +175,7 @@ $(document).ready(function(){
 
     setInterval(() => {
 
-        $('[data-select-controller-container]').each(function(){
+        $('[data-select-controller-container]').each(function () {
             if (!$(this).attr('data-initialized')) {
                 $(this).attr('data-initialized', 'true');
                 $(this).find('[data-select-controller-list]').sortable();

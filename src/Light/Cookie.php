@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Light;
 
@@ -35,11 +35,20 @@ class Cookie
      * @param string $name
      * @param mixed $value
      *
+     * @param int|null $expired
+     * @param string $path
+     * @param string|null $domain
+     *
      * @return bool
      */
-    public static function set(string $name, $value) : bool
+    public static function set(
+        string $name,
+        $value,
+        int $expired = null,
+        string $path = '/',
+        string $domain = null): bool
     {
-        return self::_set($name, base64_encode(serialize($value)));
+        return self::_set($name, base64_encode(serialize($value)), $expired, $path, $domain);
     }
 
     /**
@@ -73,15 +82,29 @@ class Cookie
     /**
      * @param string $name
      * @param string $value
+     * @param int|null $expired
+     *
+     * @param string $path
+     * @param string|null $domain
      *
      * @return bool
      */
-    private static function _set(string $name, string $value) : bool
+    private static function _set(
+        string $name,
+        string $value,
+        int $expired = null,
+        string $path = '/',
+        string $domain = null): bool
     {
         $name = self::_getName($name);
+        $expired = ($expired != null) ? $expired : time() * 2;
+
+        if (!$domain) {
+            $domain = '.' . Front::getInstance()->getConfig()['light']['cookie']['domain'];
+        }
 
         $_COOKIE[$name] = $value;
-        return setcookie($name, $value, time() * 2, '/');
+        return setcookie($name, $value, $expired, $path, $domain);
     }
 
     /**
@@ -99,8 +122,8 @@ class Cookie
      */
     private static function _getName(string $name)
     {
-        if (Front::getInstance()->getConfig()['light']['cookie'] ?? false) {
-            self::setNamespace(Front::getInstance()->getConfig()['light']['cookie']);
+        if (Front::getInstance()->getConfig()['light']['cookie']['namespace'] ?? false) {
+            self::setNamespace(Front::getInstance()->getConfig()['light']['cookie']['namespace']);
         }
 
         if (!self::$namespace) {

@@ -553,7 +553,7 @@ form.bmd-form .panel-body > hr:first-of-type {
     background-size: contain;
 }
 
-.select-multi .panel .panel-image {
+.panel .panel-image {
     height: 50px;
     width: 50px;
     float: left;
@@ -573,4 +573,19 @@ form.bmd-form .panel-body > hr:first-of-type {
     position: absolute;
     right: -10px;
     top: -10px;
+}
+
+
+.panel-product {
+    margin-top: 0;
+    margin-bottom: 0;
+    display: block;
+    max-height: 50px;
+    text-decoration: none !important;
+}
+
+.panel-product .panel-body {
+    padding: 0;
+    padding-left: 60px;
+    padding-top: 6px;
 }

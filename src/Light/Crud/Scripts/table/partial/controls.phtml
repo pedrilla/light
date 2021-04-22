@@ -1,6 +1,6 @@
 <?php if (count($this->controls ?? [])) : ?>
 
-  <td class="text-right">
+    <td class="text-right">
 
         <div class="btn-group">
 
@@ -17,75 +17,75 @@
 
                         <?php if ($control['type'] == 'edit') : ?>
 
-                        <li>
+                            <li>
                                 <a href="<?php echo $this->uri(['controller' => $this->controller, 'action' => 'manage'], ['id' => $this->row->id]); ?>"
-                                  class="btn btn-info bmd-ripple bmd-fab bmd-fab-sm bmd-floating overflow-visible">
+                                   class="btn btn-info bmd-ripple bmd-fab bmd-fab-sm bmd-floating overflow-visible">
                                     <i class="fa fa-edit"
-                                      data-bmd-state="info"
-                                      data-toggle="tooltip"
-                                      data-placement="bottom"
-                                      data-original-title="Изменить"></i>
+                                       data-bmd-state="info"
+                                       data-toggle="tooltip"
+                                       data-placement="bottom"
+                                       data-original-title="Изменить"></i>
                                 </a>
                             </li>
 
 
                         <?php elseif ($control['type'] == 'select') : ?>
 
-                        <li>
+                            <li>
                                 <a data-control-select="<?php echo json_encode($this->row->toArray()); ?>"
-                                  class="btn btn-info bmd-ripple bmd-fab bmd-fab-sm bmd-floating overflow-visible">
+                                   class="btn btn-info bmd-ripple bmd-fab bmd-fab-sm bmd-floating overflow-visible">
                                     <i class="fa fa-check"
-                                      data-bmd-state="info"
-                                      data-toggle="tooltip"
-                                      data-placement="bottom"
-                                      data-original-title="Выбрать"></i>
+                                       data-bmd-state="info"
+                                       data-toggle="tooltip"
+                                       data-placement="bottom"
+                                       data-original-title="Выбрать"></i>
                                 </a>
                             </li>
 
 
                         <?php elseif ($control['type'] == 'copy') : ?>
 
-                        <li>
+                            <li>
                                 <a data-copy="true"
-                                  data-title="Копировать запись?"
-                                  data-href="<?php echo $this->uri(['controller' => $this->controller, 'action' => 'copy'], ['id' => $this->row->id]); ?>"
-                                  class="btn btn-success bmd-ripple bmd-fab bmd-fab-sm bmd-floating overflow-visible">
+                                   data-title="Копировать запись?"
+                                   data-href="<?php echo $this->uri(['controller' => $this->controller, 'action' => 'copy'], ['id' => $this->row->id]); ?>"
+                                   class="btn btn-success bmd-ripple bmd-fab bmd-fab-sm bmd-floating overflow-visible">
                                     <i class="fa fa-copy"
-                                      data-bmd-state="success"
-                                      data-toggle="tooltip"
-                                      data-placement="bottom"
-                                      data-original-title="Копировать"></i>
+                                       data-bmd-state="success"
+                                       data-toggle="tooltip"
+                                       data-placement="bottom"
+                                       data-original-title="Копировать"></i>
                                 </a>
                             </li>
 
                         <?php elseif ($control['type'] == 'enabled') : ?>
 
-                        <li>
+                            <li>
 
                                 <?php if ($this->row->enabled) : ?>
 
-                                  <a data-enabled="true"
-                                    data-title="Приостановить работу?"
-                                    data-href="<?php echo $this->uri(['controller' => $this->controller, 'action' => 'setEnabled'], ['enabled' => 0, 'id' => $this->row->id]); ?>"
-                                    class="btn btn-warning bmd-ripple bmd-fab bmd-fab-sm bmd-floating overflow-visible">
+                                    <a data-enabled="true"
+                                       data-title="Приостановить работу?"
+                                       data-href="<?php echo $this->uri(['controller' => $this->controller, 'action' => 'setEnabled'], ['enabled' => 0, 'id' => $this->row->id]); ?>"
+                                       class="btn btn-warning bmd-ripple bmd-fab bmd-fab-sm bmd-floating overflow-visible">
                                         <i class="fa fa-eye-slash"
-                                          data-bmd-state="warning"
-                                          data-toggle="tooltip"
-                                          data-placement="bottom"
-                                          data-original-title="Выключить"></i>
+                                           data-bmd-state="warning"
+                                           data-toggle="tooltip"
+                                           data-placement="bottom"
+                                           data-original-title="Выключить"></i>
                                     </a>
 
                                 <?php else : ?>
 
-                                  <a data-enabled="true"
-                                    data-title="Возобновить работу?"
-                                    data-href="<?php echo $this->uri(['controller' => $this->controller, 'action' => 'setEnabled'], ['enabled' => 1, 'id' => $this->row->id]); ?>"
-                                    class="btn btn-warning bmd-ripple bmd-fab bmd-fab-sm bmd-floating overflow-visible">
+                                    <a data-enabled="true"
+                                       data-title="Возобновить работу?"
+                                       data-href="<?php echo $this->uri(['controller' => $this->controller, 'action' => 'setEnabled'], ['enabled' => 1, 'id' => $this->row->id]); ?>"
+                                       class="btn btn-warning bmd-ripple bmd-fab bmd-fab-sm bmd-floating overflow-visible">
                                         <i class="fa fa-eye"
-                                          data-bmd-state="warning"
-                                          data-toggle="tooltip"
-                                          data-placement="bottom"
-                                          data-original-title="Включить"></i>
+                                           data-bmd-state="warning"
+                                           data-toggle="tooltip"
+                                           data-placement="bottom"
+                                           data-original-title="Включить"></i>
                                     </a>
 
                                 <?php endif; ?>
@@ -103,16 +103,30 @@
 
     </td>
 
-<?php else : ?>
+<?php elseif ($this->isSelectControl) : ?>
 
-  <td class="text-right">
-    <div class="btn-group">
-        <div class="bmd-fab-speed-dial-container">
-            <a class="btn btn-primary bmd-ripple bmd-fab bmd-floating bmd-fab-sm" onclick="window.parent.postMessage({elementName: '<?php echo $this->elementName; ?>', data: '<?php echo base64_encode(json_encode($this->row->toArray())); ?>'}, 'http://admin.v3.buczynski-meble.com.ua/');">
-                <span class="bmd-icon flaticon-check52"></span>
-            </a>
+    <?php $id = md5(microtime()); ?>
+
+    <td class="text-right">
+        <div class="btn-group">
+            <div class="bmd-fab-speed-dial-container">
+
+                <a data-select-record="<?php echo $id; ?>"
+                   class="btn btn-primary bmd-ripple bmd-fab bmd-floating bmd-fab-sm">
+                    <span class="bmd-icon flaticon-check52"></span>
+                </a>
+
+                <script>
+                    $('[data-select-record="<?php echo $id; ?>"]').click(() => {
+                        window.parent.postMessage({
+                            elementName: '<?php echo $this->elementName; ?>',
+                            data: '<?php echo base64_encode(json_encode(\Light\Map::execute($this->row, array_merge($this->fields, ['id' => 'id'])))); ?>'
+                        }, location.origin);
+                    });
+                </script>
+
+            </div>
         </div>
-    </div>
-  </td>
+    </td>
 
 <?php endif; ?>

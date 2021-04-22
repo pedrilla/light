@@ -1,5 +1,6 @@
 $(document).ready(function () {
   $(document).on('click', '[data-select-multi] [data-select]', function () {
+
     const root = $(this).closest('[data-select-multi]');
     const elementName = root.data('select-multi');
     const sourceNamespace = root.data('select-source').split('\\');
@@ -8,7 +9,7 @@ $(document).ready(function () {
     const selectFields = JSON.parse(atob(root.data('select-fields')));
     selectFields['id'] = 'id';
 
-    const iframeUrl = '/' + sourceNamespace[sourceNamespace.length - 1].toLowerCase() + '/select';
+    const iframeUrl = '/' + sourceNamespace[sourceNamespace.length - 1].toLowerCase() + '/select?fields=' + root.data('select-fields');
 
     const handler = (event) => {
       const item = JSON.parse(atob(event.data.data));

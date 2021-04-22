@@ -203,7 +203,7 @@ abstract class Crud extends AuthCrud
      */
     public function getControls(): array
     {
-        $controls = [
+        $controls = $this->controls ?? [
             ['type' => 'edit']
         ];
 
@@ -427,6 +427,8 @@ abstract class Crud extends AuthCrud
             'paginator' => $this->getPaginator(),
             'elementName' => $this->getParam('elementName'),
             'controller' => $this->getRouter()->getController(),
+            'fields' => json_decode(base64_decode($this->getParam('fields')), true),
+            'fieldsRaw' => $this->getParam('fields')
         ]);
 
         $this->getView()->setScript('table/modal');

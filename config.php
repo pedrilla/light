@@ -17,8 +17,11 @@ return [
         // Not required - just will be used as false
         'exception' => true,
 
-        // Cookie namespace
-        'cookie' => null,
+        // Cookie
+        'cookie' => [
+            'namespace' => null,
+            'domain' => 'domain.com'
+        ],
 
         // PHP ini vars
         'phpIni' => [

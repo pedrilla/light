@@ -2,12 +2,12 @@
 
     <nav aria-label="Page navigation" class="text-right">
 
-        <ul class="pagination">
+        <ul class="pagination" data-paginator="true">
 
             <?php if ($this->prev) : ?>
 
                 <li>
-                    <a href="?page=<?php echo $this->prev; ?>" aria-label="Previous">
+                    <a data-force="true" data-page="<?php echo $this->prev; ?>" aria-label="Previous">
                         <span aria-hidden="true">&laquo;</span>
                     </a>
                 </li>
@@ -17,7 +17,7 @@
             <?php foreach ($this->pages as $page) : ?>
 
                 <li <?php if ($page == $this->paginator->getPage()) : ?>class="active"<?php endif; ?>>
-                    <a href="?page=<?php echo $page; ?>">
+                    <a data-force="true" data-page="<?php echo $page; ?>">
                         <?php echo $page; ?>
                     </a>
                 </li>
@@ -27,7 +27,7 @@
             <?php if ($this->next) : ?>
 
                 <li>
-                    <a href="?page=<?php echo $this->next; ?>" aria-label="Next">
+                    <a data-force="true" data-page="<?php echo $this->next; ?>" aria-label="Next">
                         <span aria-hidden="true">&raquo;</span>
                     </a>
                 </li>
